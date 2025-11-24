@@ -1,0 +1,55 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Predicción Clínica</title>
+        <link rel="stylesheet" href="{% static 'myapp/css/styles_hacer_prediccion.css' %}"> 
+    </head>
+    <body>
+
+        <h1>Análisis de Predicción Clínica</h1>
+        <p>Ingresa la descripción clínica del paciente para obtener una predicción de la categoría.</p>
+
+        <!-- Mostrar error general si no se ingresa texto -->
+        {% if error %}
+            <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+        {% endif %}
+
+        <form method="post" action=".">
+            {% csrf_token %}
+            <label for="texto_clinico">Descripción Clínica:</label><br>
+            <textarea id="texto_clinico" name="texto_clinico" placeholder="Ej: Hombre de 70 años se realiza una colonoscopia de seguimiento..." required>{{ texto_ingresado }}</textarea><br><br>
+            <button type="submit">Hacer Predicción</button>
+        </form>
+
+        {% if resultado_api %}
+        <hr>
+        <div class="resultado">
+            <h2>Resultado de la Predicción (Consenso)</h2>
+
+            <p><strong>Texto Analizado:</strong> {{ texto_ingresado }}</p>
+
+            <h3>Conclusión General</h3>
+            <p><strong>{{ resultado_api.consenso.resultado_general }}</strong></p>
+            <p>Votos CO: {{ resultado_api.consenso.votos_CO }}</p>
+            <p>Votos CRC: {{ resultado_api.consenso.votos_CRC }}</p>
+            <p>Acuerdo: {{ resultado_api.consenso.porcentaje_acuerdo }}%</p>
+
+            <h3>Predicciones por Modelo</h3>
+            <ul>
+            {% for item in resultado_api.predicciones %}
+                <li>
+                    <strong>{{ item.modelo }}:</strong>
+                    {{ item.prediccion }}
+                    — CO: {{ item.probabilidad_CO }}%
+                    — CRC: {{ item.probabilidad_CRC }}%
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </body>
+</html>

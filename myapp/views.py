@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect
 from .models import AppUser
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
+from .services.prediccion_service import obtener_predicciones
+
 
 def welcome(request):
     """
@@ -424,3 +426,26 @@ def historia_clinica(request):
     if not request.session.get("authenticated_user"):
         return redirect("login")
     return render(request,'historia clinica.html')
+
+def hacer_prediccion(request):
+    contexto = {
+        "texto_ingresado": "",
+        "resultado_api": None,
+        "error": None
+    }
+
+    if request.method == "POST":
+        texto = request.POST.get("texto_clinico", "").strip()
+        contexto["texto_ingresado"] = texto
+
+        if texto == "":
+            contexto["error"] = "Debes ingresar una descripción clínica."
+        else:
+            resultado = obtener_predicciones(texto)
+
+            if "error" in resultado:
+                contexto["error"] = resultado["error"]
+            else:
+                contexto["resultado_api"] = resultado
+
+    return render(request, "hacer_prediccion.html", contexto)
