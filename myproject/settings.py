@@ -86,54 +86,54 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# # Obtener la URL desde las variables de entorno
-# database_url = getenv("DATABASE_URL")  
+# Obtener la URL desde las variables de entorno
+database_url = getenv("DATABASE_URL")  
 
-# if not database_url:  
-#     # Si la variable DATABASE_URL no está configurada, lanza una excepción para informar al desarrollador.
-#     raise ValueError("DATABASE_URL no está configurada en el archivo .env")
+if not database_url:  
+    # Si la variable DATABASE_URL no está configurada, lanza una excepción para informar al desarrollador.
+    raise ValueError("DATABASE_URL no está configurada en el archivo .env")
 
-# # Analizar la URL de la base de datos para obtener sus componentes
-# tmpPostgres = urlparse(database_url)  
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',  
-#         # Define el motor de base de datos que usará Django, en este caso PostgreSQL.
-
-#         'NAME': tmpPostgres.path.lstrip('/').decode('utf-8') if isinstance(tmpPostgres.path, bytes) else tmpPostgres.path.lstrip('/'),
-#         # Obtiene el nombre de la base de datos eliminando la barra inicial (/) de `tmpPostgres.path`.
-#         # Si `tmpPostgres.path` es de tipo bytes, lo convierte a una cadena de texto usando `.decode('utf-8')`.
-
-#         'USER': tmpPostgres.username,  
-#         # El usuario de la base de datos, extraído de la URL.
-
-#         'PASSWORD': tmpPostgres.password,  
-#         # La contraseña asociada al usuario, extraída de la URL.
-
-#         'HOST': tmpPostgres.hostname,  
-#         # El nombre del host donde está alojada la base de datos, extraído de la URL.
-
-#         'PORT': tmpPostgres.port or 5432,  
-#         # El puerto en el que la base de datos escucha conexiones.
-#         # Si no se especifica un puerto en la URL, usa el puerto predeterminado para PostgreSQL (5432).
-        
-#         'OPTIONS': {
-#             'sslmode': 'require',
-#         },
-#         # Sirve para habilitar y forzar el uso de una conexión segura (SSL/TLS) entre tu aplicación Django y 
-#         # tu base de datos PostgreSQL. Esto asegura que todos los datos que viajan entre tu servidor y 
-#         # la base de datos estén encriptados, protegiéndolos contra posibles intercepciones o ataques.
-
-#     }
-# }
+# Analizar la URL de la base de datos para obtener sus componentes
+tmpPostgres = urlparse(database_url)  
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',  
+        # Define el motor de base de datos que usará Django, en este caso PostgreSQL.
+
+        'NAME': tmpPostgres.path.lstrip('/').decode('utf-8') if isinstance(tmpPostgres.path, bytes) else tmpPostgres.path.lstrip('/'),
+        # Obtiene el nombre de la base de datos eliminando la barra inicial (/) de `tmpPostgres.path`.
+        # Si `tmpPostgres.path` es de tipo bytes, lo convierte a una cadena de texto usando `.decode('utf-8')`.
+
+        'USER': tmpPostgres.username,  
+        # El usuario de la base de datos, extraído de la URL.
+
+        'PASSWORD': tmpPostgres.password,  
+        # La contraseña asociada al usuario, extraída de la URL.
+
+        'HOST': tmpPostgres.hostname,  
+        # El nombre del host donde está alojada la base de datos, extraído de la URL.
+
+        'PORT': tmpPostgres.port or 5432,  
+        # El puerto en el que la base de datos escucha conexiones.
+        # Si no se especifica un puerto en la URL, usa el puerto predeterminado para PostgreSQL (5432).
+        
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+        # Sirve para habilitar y forzar el uso de una conexión segura (SSL/TLS) entre tu aplicación Django y 
+        # tu base de datos PostgreSQL. Esto asegura que todos los datos que viajan entre tu servidor y 
+        # la base de datos estén encriptados, protegiéndolos contra posibles intercepciones o ataques.
+
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
