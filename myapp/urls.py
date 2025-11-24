@@ -13,5 +13,6 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('historia_clinica/', views.historia_clinica, name='historia_clinica'),
     path("hacer-prediccion/", views.hacer_prediccion, name="hacer_prediccion"),
+    path('error_404/', views.error_404, name='error_404'),
 
 ]

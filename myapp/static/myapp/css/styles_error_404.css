@@ -1,0 +1,63 @@
+:root {
+    --fondo-oscuro: #1E1E1E;
+    --fondo-claro: #2A2A2A;
+    --color-letra: white;
+    --color-azul-electrico: #00B0FF;
+    --color-azul-transicion-botones: #0086CC;
+    --color-inputs: #333333;
+    --letra-titulos: 'Orbitron', sans-serif;
+    --letra-normal: 'Roboto', sans-serif;
+}
+
+body {
+    background-color: var(--fondo-oscuro);
+    color: var(--color-letra);
+    font-family: var(--letra-normal);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+}
+
+.error-container {
+    background-color: var(--fondo-claro);
+    padding: 60px 80px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.error-code {
+    font-size: 6rem;
+    color: var(--color-azul-electrico);
+    font-family: var(--letra-titulos);
+    margin: 0 0 10px 0;
+}
+
+.error-message {
+    font-size: 1.8rem;
+    color: var(--color-letra);
+    margin-bottom: 20px;
+}
+
+.error-text {
+    font-size: 1rem;
+    color: #b0b0b0;
+    margin-bottom: 30px;
+}
+
+.return-link {
+    display: inline-block;
+    background-color: var(--color-azul-electrico);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.return-link:hover {
+    background-color: var(--color-azul-transicion-botones);
+}

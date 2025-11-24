@@ -5,6 +5,11 @@ from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from .services.prediccion_service import obtener_predicciones
 
+def handler404(request, exception):
+    return redirect('error_404')
+
+def error_404(request):
+    return render(request,'error_404.html')
 
 def welcome(request):
     """
