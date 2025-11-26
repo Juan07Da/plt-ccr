@@ -19,19 +19,18 @@
                 <h2 class="logo">NEX</h2>
                 <nav>
                     <ul>
-                        <li>
+                        <!-- <li>
                             <div class="lista"><a href="{% url 'home' %}"><img src="{% static 'myapp/icon/home.png' %}" alt="">Home</a></div>
+                        </li> -->
+                        
+                        <li>
+                            <div class="lista"><a href="{% url 'hacer_prediccion' %}"><img src="{% static 'myapp/icon/hacer una prediccion.png' %}" alt="">Hacer prediccion individual</a></div>
                         </li>
                         <li>
-                            <div class="lista"><a href="#"><img src="{% static 'myapp/icon/predicciones.png' %}" alt="">Predicciones</a></div>
+                            <div class="lista"><a href="{% url 'crear_paciente' %}"><img src="{% static 'myapp/icon/predicciones.png' %}" alt="">Añadir Paciente</a></div>
                         </li>
-
                         <li>
-                            <div class="lista"><a href="{% url 'hacer_prediccion' %}"><img src="{% static 'myapp/icon/hacer una prediccion.png' %}" alt="">Hacer prediccion</a></div>
-                        </li>
-
-                        <li>
-                            <div class="lista"><a href="{% url 'historia_clinica' %}"><img src="{% static 'myapp/icon/historia clinica.png' %}" alt="">Historia Clínica</a></div>
+                            <div class="lista"><a href="{% url 'lista_pacientes' %}"><img src="{% static 'myapp/icon/historia clinica.png' %}" alt="">Lista de pacientes</a></div>
                         </li>
                         <li>
                             <div class="lista"><a href="#"><img src="{% static 'myapp/icon/estadisticas.png' %}" alt="">Estadísticas</a></div>
@@ -70,11 +69,11 @@
                 <h1>Funciones Principales</h1>
                 <div class="cards1">
                     <button class="btn">
-                        <div class="texto_btn">Hacer una<br>prediccion</div>
+                        <div class="texto_btn">Hacer una<br>prediccion independiente</div>
                         <div class="img_btn"><img src="{% static 'myapp/icon/hacer una prediccion.png' %}" alt=""></div>
                     </button>
                     <button class="btn">
-                        <div class="texto_btn">Ver<br>historias<br>clinicas</div>
+                        <div class="texto_btn">Ver<br>lista de<br>pacientes</div>
                         <div class="img_btn"><img src="{% static 'myapp/icon/ver historias clinicas.png' %}" alt=""></div>
                     </button>
                 </div>

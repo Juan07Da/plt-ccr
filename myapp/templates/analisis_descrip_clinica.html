@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Predicción Clínica - {{ paciente.primer_nombre }}</title>
+    <link rel="stylesheet" href="{% static 'myapp/css/styles_hacer_prediccion.css' %}">
+    <style>
+        /* Estilos adicionales para la tabla de resultados y decisión */
+        .resultado-container { margin-top: 20px; border-top: 2px solid #ccc; padding-top: 20px; }
+        .tabla-resultados { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .tabla-resultados th, .tabla-resultados td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .tabla-resultados th { background-color: #f2f2f2; }
+        
+        .decision-medica {
+            background-color: #e9f7ef;
+            border: 2px solid #28a745;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .btn-analizar { background-color: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+        .btn-guardar { background-color: #28a745; color: white; padding: 10px 20px; border: none; cursor: pointer; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <h1>Análisis de Predicción Clínica</h1>
+
+    <div class="paciente-info">
+        <h3>Paciente: {{ paciente.primer_nombre }} {{ paciente.primer_apellido }}</h3>
+        <p>ID: {{ paciente.numero_identificacion }} | Edad: {{ paciente.edad }}</p>
+    </div>
+
+    {% if mensaje_exito %}
+        <div style="background-color: #d4edda; color: #155724; padding: 15px; margin-bottom: 20px;">
+            <strong>¡Guardado!</strong> {{ mensaje_exito }}
+        </div>
+        <a href="{% url 'home' %}"><button>Volver al inicio</button></a>
+    {% endif %}
+
+    {% if error %}
+        <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+
+    {% if not mensaje_exito %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="texto_clinico"><strong>Descripción Clínica:</strong></label><br>
+        <textarea id="texto_clinico" name="texto_clinico" rows="5" style="width: 100%;" required>{{ texto_ingresado }}</textarea>
+        <br><br>
+        <button type="submit" name="accion" value="analizar" class="btn-analizar">Analizar con IA</button>
+    </form>
+    {% endif %}
+
+    {% if resultado_api %}
+    <div class="resultado-container">
+        <h2>Resultados del Análisis IA</h2>
+        
+        <div style="margin-bottom: 15px;">
+            <p><strong>Consenso General:</strong> {{ resultado_api.consenso.resultado_general }}</p>
+            <p><strong>Nivel de Acuerdo:</strong> {{ resultado_api.consenso.porcentaje_acuerdo }}%</p>
+        </div>
+
+        <table class="tabla-resultados">
+            <thead>
+                <tr>
+                    <th>Modelo</th>
+                    <th>Predicción</th>
+                    <th>Prob. Control (CO)</th>
+                    <th>Prob. Cáncer (CRC)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in resultado_api.predicciones %}
+                <tr>
+                    <td>{{ item.modelo }}</td>
+                    <td>
+                        {% if "CRC" in item.prediccion or "Cancer" in item.prediccion %}
+                            <span style="color: red; font-weight: bold;">{{ item.prediccion }}</span>
+                        {% else %}
+                            <span style="color: green; font-weight: bold;">{{ item.prediccion }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ item.probabilidad_CO }}%</td>
+                    <td>{{ item.probabilidad_CRC }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="decision-medica">
+            <h3>Decisión Clínica Final</h3>
+            <p>Revise los resultados anteriores y seleccione el diagnóstico definitivo para la historia clínica.</p>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <input type="hidden" name="texto_clinico_hidden" value="{{ texto_ingresado }}">
+                <input type="hidden" name="json_resultado_hidden" value="{{ json_str }}">
+                
+                <label style="font-size: 1.2em;">
+                    <input type="radio" name="diagnostico_final" value="CO" required> 
+                    Paciente Control (Sano / Benigno)
+                </label>
+                <br>
+                <label style="font-size: 1.2em;">
+                    <input type="radio" name="diagnostico_final" value="CCR" required> 
+                    Cáncer Colorrectal (Patológico)
+                </label>
+                <br><br>
+                
+                <button type="submit" name="accion" value="guardar" class="btn-guardar">Confirmar y Guardar en Historia</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+</body>
+</html>

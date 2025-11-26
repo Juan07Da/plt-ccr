@@ -1,0 +1,389 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial Médico - {{ paciente.primer_nombre }}</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --fondo-oscuro: #1E1E1E;
+            --fondo-claro: #2A2A2A;
+            --color-letra: #E0E0E0;
+            --color-azul-electrico: #00B0FF;
+            --color-inputs: #333333;
+            --letra-principal: 'Roboto', sans-serif; 
+            
+            --color-borde: #444;
+            --color-alerta-ccr: #ff4444; 
+            --color-exito-co: #00C851;   
+        }
+
+        body {
+            background-color: var(--fondo-oscuro);
+            color: var(--color-letra);
+            font-family: var(--letra-principal);
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* --- Header y Botones --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--color-azul-electrico);
+            font-size: 1.8em;
+            font-weight: 700;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sub-id {
+            color: #888;
+            font-weight: 400;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .btn-volver {
+            background-color: transparent;
+            border: 1px solid var(--color-azul-electrico);
+            color: var(--color-azul-electrico);
+            padding: 10px 20px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-size: 0.85em;
+        }
+        .btn-volver:hover {
+            background-color: var(--color-azul-electrico);
+            color: white;
+        }
+
+        /* --- Tarjeta de Información del Paciente --- */
+        .paciente-card {
+            background-color: var(--fondo-claro);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            border-left: 4px solid var(--color-azul-electrico);
+        }
+
+        .info-group label {
+            display: block;
+            color: #888;
+            font-size: 0.75em;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .info-group span {
+            font-size: 1.1em;
+            font-weight: 400;
+            color: white;
+        }
+
+        /* --- ESTRUCTURA DE ALINEACIÓN --- */
+        
+        .grid-headers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .header-title {
+            font-size: 1.2em;
+            font-weight: 500;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge-count {
+            background-color: #333;
+            color: var(--color-azul-electrico);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 700;
+        }
+
+        /* FILA MÉDICA: Alinea Historia y Análisis lado a lado */
+        .medical-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 40px; 
+            align-items: start; 
+            margin-bottom: 30px; 
+            padding-bottom: 30px;
+            border-bottom: 1px solid #2a2a2a; 
+        }
+
+        @media (max-width: 900px) {
+            .grid-headers { display: none; }
+            .medical-row { grid-template-columns: 1fr; gap: 20px; border-bottom: 2px solid #333; } 
+        }
+
+        /* --- Estilos de Tarjetas --- */
+        .history-card {
+            background-color: var(--fondo-claro);
+            border-radius: 8px;
+            border: 1px solid var(--color-borde);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            height: 100%; 
+        }
+
+        .card-header {
+            background-color: #252525;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--color-borde);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .fecha-dato {
+            font-weight: 700;
+            color: var(--color-azul-electrico);
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .autor-dato { font-size: 0.85em; color: #888; }
+
+        .card-body { padding: 20px; }
+        .card-body p { margin: 0 0 15px 0; font-size: 0.95em; line-height: 1.6; color: #ccc; }
+        
+        .label-med { 
+            color: var(--color-azul-electrico); 
+            font-weight: 700; 
+            display: block; 
+            margin-bottom: 4px; 
+            font-size: 0.85em; 
+            text-transform: uppercase; 
+        }
+
+        /* --- Estilos Específicos IA --- */
+        .ai-card { border-left: 4px solid transparent; }
+        .borde-ccr { border-left-color: var(--color-alerta-ccr) !important; }
+        .borde-co  { border-left-color: var(--color-exito-co) !important; }
+        .diag-ccr { color: var(--color-alerta-ccr); }
+        .diag-co  { color: var(--color-exito-co); }
+
+        /* Consenso Texto */
+        .consenso-info {
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        /* Tabla Pequeña */
+        .mini-table-container { 
+            margin-top: 0; 
+            border: 1px solid #333; 
+            border-radius: 4px; 
+            overflow: hidden; 
+        }
+        
+        .mini-table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+        .mini-table th { text-align: left; padding: 10px; background-color: #222; color: #888; font-weight: 500; border-bottom: 1px solid #444; }
+        .mini-table td { padding: 10px; border-bottom: 1px solid #333; color: #ddd; }
+        .mini-table tr:last-child td { border-bottom: none; }
+        
+        .txt-ccr { color: var(--color-alerta-ccr); font-weight: 700; }
+        .txt-co { color: var(--color-exito-co); font-weight: 700; }
+
+        /* FOOTER DIAGNÓSTICO (Lo nuevo) */
+        .diagnostico-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #444;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .label-profesional {
+            color: #888;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .valor-diagnostico {
+            font-size: 1.4em;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        /* Estado vacío */
+        .empty-slot {
+            padding: 40px;
+            border: 2px dashed #333;
+            border-radius: 8px;
+            color: #555;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div>
+            <h1>Expediente Digital</h1>
+            <span class="sub-id">ID PACIENTE: {{ paciente.numero_identificacion }}</span>
+        </div>
+        <a href="{% url 'lista_pacientes' %}" class="btn-volver">Volver a Lista</a>
+    </div>
+
+    <div class="paciente-card">
+        <div class="info-group">
+            <label>Nombre Completo</label>
+            <span>{{ paciente.primer_nombre }} {{ paciente.segundo_nombre }} {{ paciente.primer_apellido }} {{ paciente.segundo_apellido }}</span>
+        </div>
+        <div class="info-group">
+            <label>Documento</label>
+            <span>{{ paciente.get_tipo_identificacion_display }} {{ paciente.numero_identificacion }}</span>
+        </div>
+        <div class="info-group">
+            <label>Edad / Sexo</label>
+            <span>{{ paciente.edad }} años / {{ paciente.get_sexo_display }}</span>
+        </div>
+        <div class="info-group">
+            <label>Ubicación</label>
+            <span>{{ paciente.direccion_residencia }}</span>
+        </div>
+    </div>
+
+    <div class="grid-headers">
+        <div class="header-title">
+            Historia Clínica <span class="badge-count">{{ total_historias }}</span>
+        </div>
+        <div class="header-title">
+            Análisis Automático <span class="badge-count">{{ total_analisis }}</span>
+        </div>
+    </div>
+
+    {% for hc, ana in registros_combinados %}
+    <div class="medical-row">
+        
+        <div>
+            {% if hc %}
+            <div class="history-card">
+                <div class="card-header">
+                    <span class="fecha-dato">📅 {{ hc.fecha_visita|date:"d M Y" }}</span>
+                    <span class="autor-dato">Dr. Profesional</span>
+                </div>
+                <div class="card-body">
+                    <p><span class="label-med">Síntomas:</span> {{ hc.sintomas_actuales }}</p>
+                    <p><span class="label-med">Diagnóstico Previo:</span> {{ hc.diagnostico_principal }}</p>
+                    <p><span class="label-med">Tratamiento:</span> {{ hc.tratamientos_actuales }}</p>
+                    {% if hc.otras_comorbilidades %}
+                        <p><span class="label-med">Otros Antecedentes:</span> {{ hc.otras_comorbilidades }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-slot">Sin historia clínica registrada</div>
+            {% endif %}
+        </div>
+
+        <div>
+            {% if ana %}
+            <div class="history-card ai-card {% if ana.diagnostico_final == 'CCR' %}borde-ccr{% else %}borde-co{% endif %}">
+                <div class="card-header">
+                    <span class="fecha-dato">🤖 Predicción IA</span>
+                    <span class="autor-dato">{{ ana.fecha_analisis|date:"d M Y" }}</span>
+                </div>
+                <div class="card-body">
+                    
+                    <div class="consenso-info">
+                        <span style="color: #888; font-weight: bold;">Consenso General IA:</span><br>
+                        {{ ana.predicciones_nlp.consenso.resultado_general }} 
+                        (Acuerdo: {{ ana.predicciones_nlp.consenso.porcentaje_acuerdo }}%)
+                    </div>
+
+                    <div class="mini-table-container">
+                        <table class="mini-table">
+                            <thead>
+                                <tr>
+                                    <th>Modelo</th>
+                                    <th>Predicción</th>
+                                    <th>Prob. CO</th>
+                                    <th>Prob. CRC</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in ana.predicciones_nlp.predicciones %}
+                                <tr>
+                                    <td>{{ item.modelo }}</td>
+                                    <td>
+                                        {% if "CRC" in item.prediccion or "Cancer" in item.prediccion %}
+                                            <span class="txt-ccr">{{ item.prediccion }}</span>
+                                        {% else %}
+                                            <span class="txt-co">{{ item.prediccion }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.probabilidad_CO }}%</td>
+                                    <td>{{ item.probabilidad_CRC }}%</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="diagnostico-footer">
+                        <span class="label-profesional">Diagnóstico Final del Profesional:</span>
+                        <span class="valor-diagnostico {% if ana.diagnostico_final == 'CCR' %}diag-ccr{% else %}diag-co{% endif %}">
+                            {{ ana.get_diagnostico_final_display }}
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-slot">Sin análisis de IA registrado</div>
+            {% endif %}
+        </div>
+
+    </div>
+    {% endfor %}
+
+</body>
+</html>

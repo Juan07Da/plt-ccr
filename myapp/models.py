@@ -1,6 +1,8 @@
 import random
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
+from datetime import date
+from django.db.models import JSONField
 
 class AppUser(models.Model):
     first_name = models.CharField(max_length=100)
@@ -23,3 +25,185 @@ class AppUser(models.Model):
         """Genera un código de 6 dígitos y lo guarda en el modelo"""
         self.verification_code = str(random.randint(100000, 999999))
         self.save()
+
+
+class Paciente(models.Model):
+    # Opciones para campos de selección
+    TIPO_ID_CHOICES = (
+        ('CC', 'Cédula de Ciudadanía'),
+        ('TI', 'Tarjeta de Identidad'),
+        ('CE', 'Cédula de Extranjería'),
+        ('PA', 'Pasaporte'),
+    )
+
+    ESTADO_CIVIL_CHOICES = (
+        ('SOLTERO', 'Soltero/a'),
+        ('CASADO', 'Casado/a'),
+        ('DIVORCIADO', 'Divorciado/a'),
+        ('VIUDO', 'Viudo/a'),
+        ('UNION_LIBRE', 'Unión Libre'),
+    )
+
+    SEXO_CHOICES = (
+        ('M', 'Masculino'),
+        ('F', 'Femenino'),
+        ('O', 'Otro'),
+    )
+
+    # --- Columnas Requeridas ---
+    tipo_identificacion = models.CharField(
+        max_length=3,
+        choices=TIPO_ID_CHOICES,
+        default='CC',
+        verbose_name="Tipo de Identificación"
+    )
+    numero_identificacion = models.CharField(
+        max_length=20,
+        unique=True,
+        verbose_name="Número de Identificación"
+    )
+    primer_nombre = models.CharField(max_length=100, verbose_name="Primer Nombre")
+    segundo_nombre = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="Segundo Nombre"
+    )
+    primer_apellido = models.CharField(max_length=100, verbose_name="Primer Apellido")
+    segundo_apellido = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="Segundo Apellido"
+    )
+    estado_civil = models.CharField(
+        max_length=15,
+        choices=ESTADO_CIVIL_CHOICES,
+        verbose_name="Estado Civil"
+    )
+    fecha_nacimiento = models.DateField(verbose_name="Fecha de Nacimiento")
+    pais_nacimiento = models.CharField(
+        max_length=100,
+        default='Colombia',
+        verbose_name="País de Nacimiento"
+    )
+    # NOTA: La edad se calculará automáticamente en el modelo o en la vista.
+    sexo = models.CharField(
+        max_length=1,
+        choices=SEXO_CHOICES,
+        verbose_name="Sexo"
+    )
+    direccion_residencia = models.CharField(
+        max_length=255,
+        verbose_name="Dirección de Residencia"
+    )
+    telefono = models.CharField(
+        max_length=15,
+        blank=True,
+        null=True,
+        verbose_name="Teléfono"
+    )
+    grupo_etnico = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="Grupo Étnico"
+    )
+
+    class Meta:
+        verbose_name = "Paciente"
+        verbose_name_plural = "Pacientes"
+        ordering = ['primer_apellido', 'primer_nombre']
+
+    def __str__(self):
+        return f"{self.primer_nombre} {self.primer_apellido} ({self.numero_identificacion})"
+
+    # Método para calcular la edad (ejemplo: se usa en plantillas o vistas)
+    def calcular_edad(self):
+        today = date.today()
+        # Se calcula la diferencia restando 1 si la fecha de cumpleaños no ha pasado
+        return today.year - self.fecha_nacimiento.year - ((today.month, today.day) < (self.fecha_nacimiento.month, self.fecha_nacimiento.day))
+
+    edad = property(calcular_edad)
+
+class HistoriaClinica(models.Model):
+    # Enlace al paciente
+    paciente = models.ForeignKey(
+        'Paciente', 
+        on_delete=models.CASCADE,
+        related_name='historias',
+        verbose_name="Paciente"
+    )
+    
+    fecha_visita = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Fecha y Hora de la Visita"
+    )
+    
+    sintomas_actuales = models.TextField(
+        verbose_name="Síntomas del Paciente"
+    )
+
+    tratamientos_actuales = models.TextField(
+        verbose_name="Tratamientos/Examenes realizados"
+    )
+    
+    diagnostico_principal = models.TextField(
+        verbose_name="Diagnóstico del Profesional"
+    )
+    
+    otras_comorbilidades = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Otras Comorbilidades y Antecedentes"
+    )
+
+    # Se eliminaron: predicciones y diagnostico_final
+    
+    class Meta:
+        verbose_name = "Historia Clínica"
+        verbose_name_plural = "Historias Clínicas "
+        ordering = ['-fecha_visita'] 
+
+    def __str__(self):
+        return f"HC #{self.pk} - {self.paciente.primer_apellido} ({self.fecha_visita.strftime('%Y-%m-%d')})"
+    
+class AnalisisFinal(models.Model):
+    DIAGNOSTICO_FINAL_CHOICES = (
+        ('CCR', 'Cáncer Colorrectal'),
+        ('CO', 'Paciente Control'),
+    )
+
+    # Conexión con el modelo Paciente
+    paciente = models.ForeignKey(
+        'Paciente',
+        on_delete=models.CASCADE,
+        related_name='analisis_finales',
+        verbose_name="Paciente"
+    )
+
+    # Columna para guardar el JSON del modelo NLP
+    predicciones_nlp = models.JSONField(
+        verbose_name="Predicciones NLP (JSON)"
+    )
+
+    # Columna para el diagnóstico final
+    diagnostico_final = models.CharField(
+        max_length=3,
+        choices=DIAGNOSTICO_FINAL_CHOICES,
+        verbose_name="Diagnóstico Final"
+    )
+
+    # (Opcional) Fecha de registro para mantener orden
+    fecha_analisis = models.DateTimeField(
+        auto_now_add=True, 
+        verbose_name="Fecha del Análisis"
+    )
+
+    class Meta:
+        verbose_name = "Análisis Final"
+        verbose_name_plural = "Análisis Finales"
+        ordering = ['-fecha_analisis']
+
+    def __str__(self):
+        return f"Análisis: {self.get_diagnostico_final_display()} - {self.paciente.primer_apellido}"

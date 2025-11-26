@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }}</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a; 
+            color: #f8f8f8; 
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px; /* Un poco más ancho para que quepan las columnas */
+            margin: 0 auto;
+            background-color: #212121; 
+            border-radius: 8px;
+            padding: 0;
+        }
+
+        .header-title {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            font-size: 1.5em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-body {
+            padding: 30px;
+        }
+
+        /* --- Estilos del Buscador --- */
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background-color: #2c2c2c;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background-color: #333;
+            color: white;
+        }
+
+        .search-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .search-button:hover { background-color: #0056b3; }
+
+        .reset-button {
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .reset-button:hover { background-color: #5a6268; }
+
+        /* --- Estilos Tabla --- */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .paciente-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .paciente-table th, .paciente-table td {
+            border: 1px solid #3a3a3a;
+            padding: 12px 10px; /* Un poco más de padding */
+            text-align: left;
+            vertical-align: middle;
+        }
+        
+        .paciente-table th {
+            background-color: #0056b3; 
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.85em;
+        }
+        
+        .paciente-table tr:nth-child(even) {
+            background-color: #2c2c2c;
+        }
+        
+        .paciente-table tr:hover {
+            background-color: #333333;
+        }
+        
+        .action-link {
+            color: #28a745;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9em;
+            display: block; /* Para que queden uno debajo del otro si hay varios */
+            margin-bottom: 5px;
+        }
+        .action-link:hover {
+            text-decoration: underline;
+        }
+
+        .add-button {
+            display: inline-block;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .add-button:hover {
+            background-color: #1e7e34;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-title">
+        {{ titulo }}
+    </div>
+    
+    <div class="content-body">
+        
+        <a href="{% url 'crear_paciente' %}" class="add-button">
+            + Añadir Nuevo Paciente
+        </a>
+
+        <div class="search-container">
+            <form method="GET" action="" style="display: flex; width: 100%; gap: 10px;">
+                <input type="text" name="q" class="search-input" placeholder="Buscar por número de identificación..." value="{{ request.GET.q }}">
+                <button type="submit" class="search-button">Buscar</button>
+                
+                {% if request.GET.q %}
+                    <a href="{% url 'lista_pacientes' %}" class="reset-button">Limpiar</a>
+                {% endif %}
+            </form>
+        </div>
+
+        {% if pacientes %}
+        <div class="table-container">
+            <table class="paciente-table">
+                <thead>
+                    <tr>
+                        <th>Tipo ID</th>
+                        <th>Número ID</th>
+                        <th>Nombre Completo</th>
+                        <th>Edad</th>
+                        <th>Género</th>
+                        <th>País</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paciente in pacientes %}
+                    <tr>
+                        <td>{{ paciente.get_tipo_identificacion_display }}</td>
+                        
+                        <td>{{ paciente.numero_identificacion }}</td>
+                        
+                        <td>
+                            {{ paciente.primer_nombre }} 
+                            {% if paciente.segundo_nombre %} {{ paciente.segundo_nombre }} {% endif %}
+                            {{ paciente.primer_apellido }}
+                        </td>
+                        
+                        <td>{{ paciente.edad }} años</td>
+                        
+                        <td>{{ paciente.get_sexo_display }}</td>
+                        
+                        <td>{{ paciente.pais_nacimiento }}</td>
+                        
+                        <td>
+                            <a href="{% url 'historial_clinico' pk=paciente.pk %}" class="action-link">Historial Clinico</a>
+                            <a href="{% url 'agregar_historia_clinica' pk=paciente.pk %}" class="action-link">Agregar Historia</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <div style="text-align: center; padding: 20px; background-color: #2c2c2c; border-radius: 4px;">
+                <p>No se encontraron pacientes con ese criterio de búsqueda.</p>
+            </div>
+        {% endif %}
+        
+        <br>
+        <a href="{% url 'home' %}" class="add-button" style="background-color: #6c757d;">
+            Volver al Inicio
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>

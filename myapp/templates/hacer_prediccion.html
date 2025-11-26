@@ -21,9 +21,14 @@
         <form method="post" action=".">
             {% csrf_token %}
             <label for="texto_clinico">Descripción Clínica:</label><br>
-            <textarea id="texto_clinico" name="texto_clinico" placeholder="Ej: Hombre de 70 años se realiza una colonoscopia de seguimiento..." required>{{ texto_ingresado }}</textarea><br><br>
+            <textarea id="texto_clinico" name="texto_clinico" placeholder="Patron: [Sexo] de [edad] años, [síntomas o asintomático]. [Antecedentes personales o familiares relevantes]. [Procedimientos realizados y resultados]. [Diagnóstico si aplica]. CEA de [valor] ng/mL." required>{{ texto_ingresado }}</textarea><br><br>
             <button type="submit">Hacer Predicción</button>
         </form>
+        <div>
+            <a href="{% url 'home' %}">
+                <button>Inicio</button>
+            </a>
+        </div>
 
         {% if resultado_api %}
         <hr>

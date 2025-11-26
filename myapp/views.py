@@ -1,9 +1,18 @@
+from itertools import zip_longest
+import json
 import re
-from django.shortcuts import render, redirect
-from .models import AppUser
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import AppUser, Paciente, HistoriaClinica
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from .services.prediccion_service import obtener_predicciones
+from .forms import PacienteForm, HistoriaClinicaForm, AnalisisFinal
+from datetime import date
+from django.db import transaction
+from django.forms import inlineformset_factory
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.db.models import Q
 
 def handler404(request, exception):
     return redirect('error_404')
@@ -418,20 +427,6 @@ def home(request):
 
     return render(request, "home.html")  # Mostrar página principal
 
-def historia_clinica(request):
-    """_summary_
-
-    Args:
-        request (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-
-    if not request.session.get("authenticated_user"):
-        return redirect("login")
-    return render(request,'historia clinica.html')
-
 def hacer_prediccion(request):
     contexto = {
         "texto_ingresado": "",
@@ -454,3 +449,162 @@ def hacer_prediccion(request):
                 contexto["resultado_api"] = resultado
 
     return render(request, "hacer_prediccion.html", contexto)
+
+def crear_paciente(request):
+    if request.method == 'POST':
+        # Instanciar el formulario principal con los datos POST
+        paciente_form = PacienteForm(request.POST)
+        
+        if paciente_form.is_valid():
+            # Solo guardamos el formulario del Paciente
+            paciente_form.save()
+            
+            return redirect('lista_pacientes') 
+            
+    else: # GET request
+        paciente_form = PacienteForm()
+        
+    context = {
+        'paciente_form': paciente_form, 
+        'titulo': 'Añadir Paciente'
+    }
+    
+    return render(request, 'crear_paciente.html', context)
+
+def lista_pacientes(request):
+    # Obtener el término de búsqueda de la URL (ej: ?q=12345)
+    busqueda = request.GET.get('q')
+
+    # Si hay búsqueda, filtramos por numero_identificacion
+    if busqueda:
+        pacientes = Paciente.objects.filter(numero_identificacion__icontains=busqueda)
+    else:
+        # Si no hay búsqueda, traemos todos
+        pacientes = Paciente.objects.all()
+
+    context = {
+        'pacientes': pacientes,
+        'titulo': 'Lista de Pacientes Registrados'
+    }
+    
+    return render(request, 'lista_pacientes.html', context)
+
+def agregar_historia_clinica(request, pk):
+
+    # 1. Obtenemos el paciente usando el PK que viene de la URL
+    paciente = get_object_or_404(Paciente, pk=pk)
+
+    if request.method == 'POST':
+        # 2. Cargamos los datos enviados en el formulario
+        form = HistoriaClinicaForm(request.POST)
+        
+        if form.is_valid():
+            # 3. Guardamos el formulario pero SIN enviar a la base de datos todavía (commit=False)
+            historia = form.save(commit=False)
+            
+            # 4. Asignamos manualmente el paciente a esta historia
+            historia.paciente = paciente
+            
+            # 5. Ahora sí guardamos en la base de datos
+            historia.save()
+
+            return redirect('analisis_descrip_clinica', pk=pk)
+    else:
+        # Si es GET, mostramos el formulario vacío
+        form = HistoriaClinicaForm()
+
+    context = {
+        'form': form,
+        'paciente': paciente
+    }
+    return render(request, 'agregar_historia_clinica.html', context)
+
+def analisis_descrip_clinica(request, pk):
+
+    paciente_obj = get_object_or_404(Paciente, pk=pk)
+    
+    contexto = {
+        "paciente": paciente_obj,
+        "texto_ingresado": "",
+        "resultado_api": None, # Objeto python para mostrar en HTML
+        "json_str": "",        # String JSON para pasar en input oculto
+        "error": None,
+        "mensaje_exito": None
+    }
+
+    if request.method == "POST":
+        accion = request.POST.get("accion") # Identificamos qué botón se oprimió
+
+        # --- CASO 1: ANALIZAR (Consultar API sin guardar) ---
+        if accion == "analizar":
+            texto = request.POST.get("texto_clinico", "").strip()
+            contexto["texto_ingresado"] = texto
+
+            if not texto:
+                contexto["error"] = "Debes ingresar una descripción clínica."
+            else:
+                try:
+                    # Llamamos a tu función NLP
+                    resultado = obtener_predicciones(texto)
+
+                    if "error" in resultado:
+                        contexto["error"] = resultado["error"]
+                    else:
+                        # Pasamos el resultado al contexto para pintarlo en la tabla
+                        contexto["resultado_api"] = resultado
+                        
+                        # Convertimos a string para guardarlo en un input hidden y no perderlo
+                        contexto["json_str"] = json.dumps(resultado)
+                        
+                except Exception as e:
+                    contexto["error"] = f"Error al conectar con el modelo: {str(e)}"
+
+        # --- CASO 2: GUARDAR (El médico confirmó el diagnóstico) ---
+        elif accion == "guardar":
+            # Recuperamos los datos de los inputs ocultos (hidden)
+            texto = request.POST.get("texto_clinico_hidden")
+            json_str = request.POST.get("json_resultado_hidden")
+            diagnostico_medico = request.POST.get("diagnostico_final") # 'CCR' o 'CO'
+
+            if not diagnostico_medico:
+                 contexto["error"] = "Debes seleccionar un diagnóstico final antes de guardar."
+            else:
+                try:
+                    # Convertimos el string JSON de vuelta a diccionario/JSON
+                    predicciones_json = json.loads(json_str)
+
+                    nuevo_analisis = AnalisisFinal(
+                        paciente=paciente_obj,
+                        predicciones_nlp=predicciones_json,
+                        diagnostico_final=diagnostico_medico # Guardamos lo que decidió el médico
+                    )
+                    nuevo_analisis.save()
+
+                    contexto["mensaje_exito"] = "Historia guardada exitosamente. El diagnóstico final fue registrado."
+                    # Limpiamos el formulario
+                    contexto["texto_ingresado"] = ""
+                    contexto["resultado_api"] = None
+                
+                except Exception as e:
+                     contexto["error"] = f"Error al guardar en base de datos: {str(e)}"
+
+    return render(request, "analisis_descrip_clinica.html", contexto)
+
+def historial_clinico(request, pk):
+    paciente = get_object_or_404(Paciente, pk=pk)
+    
+    # Obtenemos ambas listas ordenadas por fecha descendente
+    historias = paciente.historias.all().order_by('-fecha_visita')
+    analisis = paciente.analisis_finales.all().order_by('-fecha_analisis')
+    
+    # "Emparejamos" las listas. 
+    # Esto crea pares: (Historia 1, Analisis 1), (Historia 2, Analisis 2)...
+    registros_combinados = zip_longest(historias, analisis, fillvalue=None)
+
+    context = {
+        'paciente': paciente,
+        'registros_combinados': registros_combinados, # Enviamos los pares al HTML
+        'total_historias': historias.count(),
+        'total_analisis': analisis.count(),
+    }
+    return render(request, 'historial_clinico.html', context)

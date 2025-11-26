@@ -2,8 +2,8 @@ import requests
 import os
 from os import getenv
 
-# FASTAPI_URL = "http://localhost:8001/predict_all" 
-FASTAPI_URL = os.getenv("API_URL")
+FASTAPI_URL = "http://localhost:8001/predict_all" 
+# FASTAPI_URL = os.getenv("API_URL")
 
 
 def obtener_predicciones(texto):
