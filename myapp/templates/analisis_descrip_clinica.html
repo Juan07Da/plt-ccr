@@ -3,116 +3,376 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Predicción Clínica - {{ paciente.primer_nombre }}</title>
-    <link rel="stylesheet" href="{% static 'myapp/css/styles_hacer_prediccion.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEX - Predicción Clínica: {{ paciente.primer_nombre }}</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
     <style>
-        /* Estilos adicionales para la tabla de resultados y decisión */
-        .resultado-container { margin-top: 20px; border-top: 2px solid #ccc; padding-top: 20px; }
-        .tabla-resultados { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .tabla-resultados th, .tabla-resultados td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        .tabla-resultados th { background-color: #f2f2f2; }
+        /* --- 1. Variables Globales --- */
+        :root {
+            --fondo-oscuro: #1E1E1E;
+            --fondo-claro: #2A2A2A;
+            --fondo-input: #333333;
+            --color-letra: #ffffff;
+            --color-azul-electrico: #00B0FF;
+            --color-azul-hover: #0086CC;
+            --color-verde-exito: #00e676; /* Verde neón para éxitos */
+            --color-rojo-alerta: #ff5252;
+            
+            --font-nex: 'Orbitron', sans-serif; 
+            --font-general: 'Roboto', sans-serif;
+        }
+
+        /* --- 2. Base --- */
+        * { box-sizing: border-box; }
         
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: var(--font-general);
+            background-color: var(--fondo-oscuro);
+            color: var(--color-letra);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- 3. Encabezado --- */
+        .header-top { text-align: center; margin-bottom: 20px; }
+
+        .logo-nex {
+            font-family: var(--font-nex);
+            font-size: 2.5rem;
+            color: var(--color-azul-electrico);
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-decoration: none;
+            display: inline-block;
+            text-shadow: 0 0 15px rgba(0, 176, 255, 0.4);
+            margin-bottom: 10px;
+        }
+
+        h1.page-title {
+            font-family: var(--font-general);
+            font-weight: 700;
+            color: var(--color-azul-electrico);
+            font-size: 1.8rem;
+            margin: 0 0 10px 0;
+            text-align: center;
+        }
+
+        /* --- 4. Tarjeta Principal --- */
+        .form-card {
+            background-color: var(--fondo-claro);
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 96%; /* Ocupa casi toda la pantalla */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid #333;
+            margin-bottom: 30px;
+        }
+
+        /* --- 5. Información del Paciente --- */
+        .paciente-info {
+            border-bottom: 1px solid #444;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .paciente-info h3 { margin: 0 0 5px 0; color: white; font-size: 1.4rem; }
+        .paciente-info p { margin: 0; color: #aaa; }
+
+        /* --- 6. Formulario e Inputs --- */
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-family: var(--font-general);
+            font-weight: 700;
+            color: var(--color-azul-electrico);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        textarea {
+            width: 100%;
+            background-color: var(--fondo-input);
+            border: 1px solid #444;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: var(--font-general);
+            font-size: 1rem;
+            min-height: 150px;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--color-azul-electrico);
+            box-shadow: 0 0 10px rgba(0, 176, 255, 0.2);
+            background-color: #252525;
+        }
+
+        /* --- 7. Tablas (Resultados) --- */
+        .resultado-container {
+            margin-top: 30px;
+            border-top: 1px solid #444;
+            padding-top: 30px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .tabla-resultados {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tabla-resultados th, .tabla-resultados td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        .tabla-resultados th {
+            background-color: #1a1a1a;
+            color: var(--color-azul-electrico);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .tabla-resultados tr:last-child td { border-bottom: none; }
+        .tabla-resultados tr:hover { background-color: #2c2c2c; }
+
+        /* --- 8. Caja de Decisión Médica --- */
         .decision-medica {
-            background-color: #e9f7ef;
-            border: 2px solid #28a745;
+            background-color: rgba(0, 176, 255, 0.05); /* Fondo azul muy sutil */
+            border: 2px solid var(--color-azul-electrico);
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .decision-medica h3 {
+            color: var(--color-azul-electrico);
+            font-family: var(--font-nex);
+            margin-top: 0;
+        }
+
+        /* Estilo custom para Radio Buttons */
+        .radio-label {
+            display: block;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #333;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-align: left;
+            border: 1px solid transparent;
+        }
+
+        .radio-label:hover {
+            background-color: #444;
+            border-color: #666;
+        }
+
+        .radio-label input { margin-right: 10px; transform: scale(1.2); }
+
+        /* --- 9. Botones --- */
+        .btn {
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-family: var(--font-general);
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 1rem;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-analizar {
+            background-color: var(--color-azul-electrico);
+            color: white;
+            width: 100%; /* Botón ancho para analizar */
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0, 176, 255, 0.2);
+        }
+
+        .btn-analizar:hover, .btn-guardar:hover {
+            background-color: var(--color-azul-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-guardar {
+            background-color: var(--color-azul-electrico); /* Usamos azul para consistencia */
+            color: white;
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0, 176, 255, 0.2);
+        }
+
+        /* --- 10. Mensajes de Estado --- */
+        .msg-box {
             padding: 20px;
             border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
         }
-        .btn-analizar { background-color: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; }
-        .btn-guardar { background-color: #28a745; color: white; padding: 10px 20px; border: none; cursor: pointer; font-size: 16px; }
+        .msg-success {
+            background-color: rgba(0, 230, 118, 0.1);
+            border: 1px solid var(--color-verde-exito);
+            color: var(--color-verde-exito);
+        }
+        .msg-error {
+            background-color: rgba(255, 82, 82, 0.1);
+            border: 1px solid var(--color-rojo-alerta);
+            color: var(--color-rojo-alerta);
+        }
+
+        /* Enlace volver */
+        .back-link {
+            margin-top: 20px;
+            color: #666;
+            text-decoration: none;
+        }
+        .back-link:hover { color: white; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-    <h1>Análisis de Predicción Clínica</h1>
-
-    <div class="paciente-info">
-        <h3>Paciente: {{ paciente.primer_nombre }} {{ paciente.primer_apellido }}</h3>
-        <p>ID: {{ paciente.numero_identificacion }} | Edad: {{ paciente.edad }}</p>
+    <div class="header-top">
+        <a href="{% url 'home' %}" class="logo-nex">NEX</a>
     </div>
 
-    {% if mensaje_exito %}
-        <div style="background-color: #d4edda; color: #155724; padding: 15px; margin-bottom: 20px;">
-            <strong>¡Guardado!</strong> {{ mensaje_exito }}
-        </div>
-        <a href="{% url 'home' %}"><button>Volver al inicio</button></a>
-    {% endif %}
+    <h1 class="page-title">Análisis de Predicción Clínica</h1>
 
-    {% if error %}
-        <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
-    {% endif %}
+    <div class="form-card">
+        
+        <div class="paciente-info">
+            <h3>{{ paciente.primer_nombre }} {{ paciente.primer_apellido }}</h3>
+            <p>
+                ID: {{ paciente.numero_identificacion }} 
+                <span style="color: var(--color-azul-electrico); margin: 0 10px;">|</span> 
+                Edad: {{ paciente.edad }} años
+            </p>
+        </div>
+
+        {% if mensaje_exito %}
+            <div class="msg-box msg-success">
+                <h3 style="margin-top:0;">¡Guardado Exitosamente!</h3>
+                {{ mensaje_exito }}
+            </div>
+            <div style="text-align: center;">
+                <a href="{% url 'home' %}" class="btn btn-analizar" style="max-width: 200px;">Volver al Inicio</a>
+            </div>
+        {% endif %}
+
+        {% if error %}
+            <div class="msg-box msg-error">
+                <strong>Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        {% if not mensaje_exito %}
+        <form method="post">
+            {% csrf_token %}
+            <label for="texto_clinico">Descripción Clínica / Síntomas:</label>
+            <textarea id="texto_clinico" name="texto_clinico" placeholder="Ingrese aquí los síntomas, antecedentes y detalles clínicos del paciente..." required>{{ texto_ingresado }}</textarea>
+            
+            <button type="submit" name="accion" value="analizar" class="btn btn-analizar">
+                 Analizar
+            </button>
+        </form>
+        {% endif %}
+
+        {% if resultado_api %}
+        <div class="resultado-container">
+            <h2 style="color: var(--color-azul-electrico); font-family: var(--font-nex);">Resultados del Análisis</h2>
+            
+            <div style="margin-bottom: 20px; font-size: 1.1rem;">
+                <p><strong>Consenso General:</strong> <span style="color: white;">{{ resultado_api.consenso.resultado_general }}</span></p>
+                <p><strong>Nivel de Acuerdo:</strong> <span style="color: var(--color-azul-electrico);">{{ resultado_api.consenso.porcentaje_acuerdo }}%</span></p>
+            </div>
+
+            <table class="tabla-resultados">
+                <thead>
+                    <tr>
+                        <th>Modelo</th>
+                        <th>Predicción</th>
+                        <th>Prob. Control (CO)</th>
+                        <th>Prob. Cáncer (CRC)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in resultado_api.predicciones %}
+                    <tr>
+                        <td>{{ item.modelo }}</td>
+                        <td>
+                            {% if "CRC" in item.prediccion or "Cancer" in item.prediccion %}
+                                <span style="color: var(--color-rojo-alerta); font-weight: bold;">{{ item.prediccion }}</span>
+                            {% else %}
+                                <span style="color: var(--color-verde-exito); font-weight: bold;">{{ item.prediccion }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.probabilidad_CO }}%</td>
+                        <td>{{ item.probabilidad_CRC }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="decision-medica">
+                <h3>Decisión Clínica Final</h3>
+                <p style="color: #ccc; margin-bottom: 20px;">
+                    Revise los resultados de la IA y seleccione el diagnóstico definitivo para la historia clínica.
+                </p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <input type="hidden" name="texto_clinico_hidden" value="{{ texto_ingresado }}">
+                    <input type="hidden" name="json_resultado_hidden" value="{{ json_str }}">
+                    
+                    <label class="radio-label">
+                        <input type="radio" name="diagnostico_final" value="CO" required> 
+                        <span style="color: var(--color-verde-exito);">Paciente Control (Sano / Benigno)</span>
+                    </label>
+                    
+                    <label class="radio-label">
+                        <input type="radio" name="diagnostico_final" value="CCR" required> 
+                        <span style="color: var(--color-rojo-alerta);">Cáncer Colorrectal (Patológico)</span>
+                    </label>
+                    
+                    <button type="submit" name="accion" value="guardar" class="btn btn-guardar">
+                        Confirmar y Guardar en Historia
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
 
     {% if not mensaje_exito %}
-    <form method="post">
-        {% csrf_token %}
-        <label for="texto_clinico"><strong>Descripción Clínica:</strong></label><br>
-        <textarea id="texto_clinico" name="texto_clinico" rows="5" style="width: 100%;" required>{{ texto_ingresado }}</textarea>
-        <br><br>
-        <button type="submit" name="accion" value="analizar" class="btn-analizar">Analizar con IA</button>
-    </form>
-    {% endif %}
-
-    {% if resultado_api %}
-    <div class="resultado-container">
-        <h2>Resultados del Análisis IA</h2>
-        
-        <div style="margin-bottom: 15px;">
-            <p><strong>Consenso General:</strong> {{ resultado_api.consenso.resultado_general }}</p>
-            <p><strong>Nivel de Acuerdo:</strong> {{ resultado_api.consenso.porcentaje_acuerdo }}%</p>
-        </div>
-
-        <table class="tabla-resultados">
-            <thead>
-                <tr>
-                    <th>Modelo</th>
-                    <th>Predicción</th>
-                    <th>Prob. Control (CO)</th>
-                    <th>Prob. Cáncer (CRC)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in resultado_api.predicciones %}
-                <tr>
-                    <td>{{ item.modelo }}</td>
-                    <td>
-                        {% if "CRC" in item.prediccion or "Cancer" in item.prediccion %}
-                            <span style="color: red; font-weight: bold;">{{ item.prediccion }}</span>
-                        {% else %}
-                            <span style="color: green; font-weight: bold;">{{ item.prediccion }}</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ item.probabilidad_CO }}%</td>
-                    <td>{{ item.probabilidad_CRC }}%</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <div class="decision-medica">
-            <h3>Decisión Clínica Final</h3>
-            <p>Revise los resultados anteriores y seleccione el diagnóstico definitivo para la historia clínica.</p>
-            
-            <form method="post">
-                {% csrf_token %}
-                
-                <input type="hidden" name="texto_clinico_hidden" value="{{ texto_ingresado }}">
-                <input type="hidden" name="json_resultado_hidden" value="{{ json_str }}">
-                
-                <label style="font-size: 1.2em;">
-                    <input type="radio" name="diagnostico_final" value="CO" required> 
-                    Paciente Control (Sano / Benigno)
-                </label>
-                <br>
-                <label style="font-size: 1.2em;">
-                    <input type="radio" name="diagnostico_final" value="CCR" required> 
-                    Cáncer Colorrectal (Patológico)
-                </label>
-                <br><br>
-                
-                <button type="submit" name="accion" value="guardar" class="btn-guardar">Confirmar y Guardar en Historia</button>
-            </form>
-        </div>
-    </div>
+    <a href="{% url 'home' %}" class="back-link">← Cancelar y Volver</a>
     {% endif %}
 
 </body>

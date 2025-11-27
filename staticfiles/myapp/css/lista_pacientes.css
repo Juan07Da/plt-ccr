@@ -1,0 +1,206 @@
+/* 1. Importación de Fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Roboto:wght@300;400;500;700&display=swap');
+
+/* 2. Definición de Variables */
+:root {
+    --fondo-oscuro: #1E1E1E;
+    --fondo-claro: #2A2A2A;
+    --color-letra: white;
+    --color-azul-electrico: #00B0FF;
+    --color-azul-transicion-botones: #0086CC;
+    --color-inputs: #333333;
+    --letra-titulos: 'Orbitron', sans-serif;
+    --letra-normal: 'Roboto', sans-serif;
+    --borde-suave: 1px solid #3d3d3d;
+}
+
+/* 3. Estilos Generales */
+body {
+    font-family: var(--letra-normal);
+    background-color: var(--fondo-oscuro);
+    color: var(--color-letra);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+/* Contenedor Principal (Tarjeta estilo Dashboard) */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: var(--fondo-claro);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    padding: 0;
+    overflow: hidden; /* Para que la cabecera no se salga del borde redondeado */
+}
+
+/* Cabecera del Título */
+.header-title {
+    background-color: #232323; /* Un poco más oscuro que el fondo claro */
+    color: var(--color-azul-electrico);
+    padding: 20px 30px;
+    border-bottom: 2px solid var(--color-azul-electrico);
+    font-size: 1.5em;
+    font-weight: 700; /* Roboto Bold */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Si el título fuera "NEX", usaría var(--letra-titulos), pero como es dinámico usamos Roboto */
+    font-family: var(--letra-normal); 
+}
+
+.content-body {
+    padding: 30px;
+}
+
+/* --- Buscador y Formularios --- */
+.search-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    background-color: transparent; /* Quitamos el fondo gris del contenedor, se ve mejor limpio */
+    padding: 0;
+}
+
+.search-input {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: var(--color-inputs);
+    color: var(--color-letra);
+    font-family: var(--letra-normal);
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.search-input:focus {
+    border-color: var(--color-azul-electrico);
+}
+
+/* --- Botones --- */
+button, .search-button, .add-button {
+    cursor: pointer;
+    font-family: var(--letra-normal);
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.search-button {
+    padding: 10px 25px;
+    background-color: var(--color-azul-electrico);
+    color: white; /* Texto blanco sobre azul */
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.search-button:hover {
+    background-color: var(--color-azul-transicion-botones);
+}
+
+.reset-button {
+    padding: 10px 20px;
+    background-color: #444; /* Gris oscuro */
+    color: #aaa;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.reset-button:hover {
+    background-color: #555;
+    color: white;
+}
+
+.add-button {
+    display: inline-block;
+    padding: 12px 20px;
+    margin-bottom: 25px;
+    background-color: var(--color-azul-electrico);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+.add-button:hover {
+    background-color: var(--color-azul-transicion-botones);
+    transform: translateY(-2px);
+}
+
+/* Botón "Volver" específico (sobreescribe estilos si es necesario) */
+a[href*="home"].add-button {
+    background-color: #444 !important;
+    color: #ccc;
+}
+a[href*="home"].add-button:hover {
+    background-color: #555 !important;
+    color: white;
+}
+
+/* --- Tabla de Pacientes --- */
+.table-container {
+    overflow-x: auto;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.paciente-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--fondo-claro);
+}
+
+.paciente-table th, .paciente-table td {
+    padding: 15px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #333; /* Solo líneas horizontales sutiles */
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+
+.paciente-table th {
+    background-color: #222; /* Encabezado de tabla oscuro */
+    color: var(--color-azul-electrico); /* Texto azul eléctrico */
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    letter-spacing: 0.5px;
+}
+
+.paciente-table tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.02); /* Cebra muy sutil */
+}
+
+.paciente-table tr:hover {
+    background-color: rgba(0, 176, 255, 0.05); /* Hover azul muy suave */
+}
+
+/* Enlaces de Acción dentro de la tabla */
+.action-link {
+    color: var(--color-azul-electrico);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9em;
+    display: block;
+    margin-bottom: 4px;
+    transition: color 0.2s;
+}
+
+.action-link:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+/* Mensaje de "No encontrado" */
+p {
+    color: #ccc;
+}

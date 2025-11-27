@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,63 +6,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ titulo }}</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
     <style>
-        /* CSS se mantiene casi igual, solo simplificamos lo relacionado a la tabla de visitas */
+        /* --- 1. Variables Globales --- */
+        :root {
+            --fondo-oscuro: #1E1E1E;
+            --fondo-claro: #2A2A2A;
+            --fondo-input: #333333;
+            --color-letra: #ffffff;
+            --color-azul-electrico: #00B0FF;
+            --color-azul-hover: #0086CC;
+            
+            --font-nex: 'Orbitron', sans-serif; 
+            --font-general: 'Roboto', sans-serif;
+        }
+
+        /* --- 2. Base --- */
+        * { box-sizing: border-box; }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #1a1a1a; 
-            color: #f8f8f8; 
+            font-family: var(--font-general);
+            background-color: var(--fondo-oscuro);
+            color: var(--color-letra);
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
+        /* --- 3. Encabezado --- */
+        .header-top { text-align: center; margin-bottom: 20px; }
+
+        .logo-nex {
+            font-family: var(--font-nex);
+            font-size: 2.5rem;
+            color: var(--color-azul-electrico);
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-decoration: none;
+            display: inline-block;
+            text-shadow: 0 0 15px rgba(0, 176, 255, 0.4);
+            margin-bottom: 10px;
+        }
+
+        /* Título de la página */
+        .page-title {
+            font-family: var(--font-general);
+            font-weight: 700;
+            color: var(--color-azul-electrico); /* Azul en lugar de fondo azul */
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- 4. Contenedor Principal (Tarjeta) --- */
         .container {
-            max-width: 1000px; /* Reducido para que se vea mejor sin la tabla grande */
-            margin: 0 auto;
-            background-color: #212121; 
-            border-radius: 8px;
-            padding: 0;
-        }
-
-        .header-title {
-            background-color: #007bff;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px 8px 0 0;
-            font-size: 1.5em;
-        }
-
-        .content-body {
-            padding: 30px;
-        }
-
-        .section-header {
-            background-color: #0056b3; 
-            color: white;
-            padding: 10px 15px;
-            margin-top: 20px;
-            margin-bottom: 15px;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-
-        /* Estilos de Campos (Inputs, Selects, Textareas) */
-        .form-control {
+            max-width: 1100px;
             width: 100%;
-            padding: 10px;
-            border: 1px solid #3a3a3a;
-            border-radius: 4px;
-            background-color: #2c2c2c;
-            color: #f8f8f8;
-            box-sizing: border-box;
-            line-height: 1.5;
+            background-color: var(--fondo-claro);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid #333;
+        }
+
+        /* --- 5. Secciones del Formulario --- */
+        .section-header {
+            color: var(--color-azul-electrico);
+            padding-bottom: 10px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-family: var(--font-nex); /* Orbitron para subtítulos */
+            border-bottom: 1px solid #444;
+            letter-spacing: 1px;
         }
         
-        .form-row {
+        /* Eliminar margen superior del primero */
+        .section-header:first-child { margin-top: 0; }
+
+        /* --- 6. Estilos de Inputs y Etiquetas --- */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ddd;
+            font-size: 0.9rem;
+        }
+
+        /* Apunta a todos los inputs generados por Django */
+        input[type="text"], 
+        input[type="number"], 
+        input[type="email"], 
+        input[type="date"], 
+        select, 
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background-color: var(--fondo-input);
+            color: white;
+            font-family: var(--font-general);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            height: 48px; /* Altura uniforme */
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--color-azul-electrico);
+            background-color: #252525;
+            box-shadow: 0 0 8px rgba(0, 176, 255, 0.2);
+        }
+
+        /* Ajustes de Layout (Grid/Flex) */
+        .form-row, .personal-info-row {
             display: flex;
             flex-wrap: wrap;
             margin-bottom: 15px;
-            gap: 20px; 
+            gap: 20px;
+        }
+
+        .field-group {
+            display: flex;
+            gap: 20px;
+            flex: 1; /* Ocupa el espacio disponible */
+            min-width: 300px; /* Evita que se aplaste mucho */
         }
 
         .form-group {
@@ -71,62 +149,83 @@
             flex-direction: column;
         }
 
-        .personal-info-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        .personal-info-row .field-group {
-            display: flex;
-            gap: 10px;
-        }
-        .personal-info-row .field-group > div {
-            flex: 1;
-        }
-        
         .note {
-            font-size: 0.8em;
-            color: #aaa;
+            font-size: 0.8rem;
+            color: #888;
             margin-top: 5px;
+            font-style: italic;
         }
-        
-        /* Estilos de Botones */
+
+        /* --- 7. Botones --- */
         .button-group {
-            margin-top: 30px;
-            border-top: 1px solid #3a3a3a;
-            padding-top: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #333;
+            padding-top: 25px;
             display: flex;
+            gap: 20px;
+            justify-content: flex-end; /* Alinear a la derecha */
         }
-        .save-button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-            background-color: #28a745;
-            color: white;
-        }
-        .add-button {
-            display: inline-block;
-            padding: 10px 15px;
-            margin-bottom: 20px;
-            background-color: #28a745;
-            color: white;
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-family: var(--font-general);
+            font-weight: 700;
             text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-block;
+            text-align: center;
         }
-        .add-button:hover {
-            background-color: #1e7e34;
+
+        /* Botón Guardar (Primario) */
+        .save-button {
+            background-color: var(--color-azul-electrico);
+            color: white;
+            border: 2px solid var(--color-azul-electrico);
+            box-shadow: 0 4px 15px rgba(0, 176, 255, 0.2);
         }
+
+        .save-button:hover {
+            background-color: var(--color-azul-hover);
+            border-color: var(--color-azul-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Botón Volver (Secundario) */
+        .back-button {
+            background-color: transparent;
+            border: 2px solid var(--color-azul-electrico);
+            color: var(--color-azul-electrico);
+        }
+
+        .back-button:hover {
+            background-color: var(--color-azul-electrico);
+            color: white;
+        }
+
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .field-group { flex-direction: column; }
+            .form-row { flex-direction: column; }
+            .button-group { flex-direction: column-reverse; }
+            .btn { width: 100%; }
+        }
+
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header-title">{{ titulo }}</div>
-    
-    <div class="content-body">
+    <div class="header-top">
+        <a href="{% url 'home' %}" class="logo-nex">NEX</a>
+    </div>
+
+    <div class="page-title">{{ titulo }}</div>
+
+    <div class="container">
+        
         <form method="post" id="paciente-form">
             {% csrf_token %} 
 
@@ -134,33 +233,35 @@
 
             <div class="personal-info-row">
                 <div class="field-group">
-                    <div style="flex-basis: 35%;">
+                    <div style="flex: 1;">
                         <label>{{ paciente_form.tipo_identificacion.label }}</label>
                         {{ paciente_form.tipo_identificacion }}
                     </div>
-                    <div style="flex-basis: 65%;">
+                    <div style="flex: 2;">
                         <label>{{ paciente_form.numero_identificacion.label }}</label>
                         {{ paciente_form.numero_identificacion }}
                     </div>
                 </div>
-                
+            </div>
+
+            <div class="personal-info-row">
                 <div class="field-group">
-                    <div>
+                    <div class="form-group">
                         <label>{{ paciente_form.primer_nombre.label }}</label>
                         {{ paciente_form.primer_nombre }}
                     </div>
-                    <div>
+                    <div class="form-group">
                         <label>{{ paciente_form.segundo_nombre.label }}</label>
                         {{ paciente_form.segundo_nombre }}
                     </div>
                 </div>
 
                 <div class="field-group">
-                    <div>
+                    <div class="form-group">
                         <label>{{ paciente_form.primer_apellido.label }}</label>
                         {{ paciente_form.primer_apellido }}
                     </div>
-                    <div>
+                    <div class="form-group">
                         <label>{{ paciente_form.segundo_apellido.label }}</label>
                         {{ paciente_form.segundo_apellido }}
                     </div>
@@ -170,30 +271,29 @@
             <div class="section-header">Detalles Demográficos</div>
 
             <div class="form-row">
-                <div class="form-group" style="flex-basis: 30%;">
+                <div class="form-group">
                     <label>{{ paciente_form.fecha_nacimiento.label }}</label>
                     {{ paciente_form.fecha_nacimiento }}
-                    <p class="note">Note: You are 5 hours behind server time.</p>
-                </div>
+                    </div>
                 
-                <div class="form-group" style="flex-basis: 30%;">
+                <div class="form-group">
                     <label>{{ paciente_form.sexo.label }}</label>
                     {{ paciente_form.sexo }}
                 </div>
                 
-                <div class="form-group" style="flex-basis: 30%;">
+                <div class="form-group">
                     <label>{{ paciente_form.estado_civil.label }}</label>
                     {{ paciente_form.estado_civil }}
                 </div>
             </div>
             
             <div class="form-row">
-                <div class="form-group" style="flex-basis: 48%;">
+                <div class="form-group">
                     <label>{{ paciente_form.pais_nacimiento.label }}</label>
                     {{ paciente_form.pais_nacimiento }}
                 </div>
                 
-                <div class="form-group" style="flex-basis: 48%;">
+                <div class="form-group">
                     <label>{{ paciente_form.grupo_etnico.label }}</label>
                     {{ paciente_form.grupo_etnico }}
                 </div>
@@ -202,28 +302,30 @@
             <div class="section-header">Contacto y Residencia</div>
 
             <div class="form-row">
-                <div class="form-group" style="flex-basis: 100%;">
+                <div class="form-group">
                     <label>{{ paciente_form.direccion_residencia.label }}</label>
                     {{ paciente_form.direccion_residencia }}
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group" style="flex-basis: 48%;">
+                <div class="form-group" style="max-width: 50%;">
                     <label>{{ paciente_form.telefono.label }}</label>
                     {{ paciente_form.telefono }}
                 </div>
             </div>
             
             <div class="button-group">
-                <button type="submit" name="_save" class="save-button">Guardar</button>   
+                <button type="button" class="btn back-button" onclick="window.history.back()">
+                    Cancelar / Volver
+                </button>
+
+                <button type="submit" name="_save" class="btn save-button">
+                    Guardar Paciente
+                </button>   
             </div>
+
         </form>
-        <br>
-        <button class="add-button" onclick="window.history.back()">
-            Volver
-        </button>
     </div>
-</div>
 
 </body>
 </html>

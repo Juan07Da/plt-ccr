@@ -1,293 +1,59 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEX - Agregar Historia Clínica</title>
+    <title>NEX - Nueva Historia Clínica</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'myapp/css/agregar_historia_clinica.css' %}">
 
-    <style>
-        /* 1. Definición de Variables (Tu paleta de colores) */
-        :root {
-            --fondo-oscuro: #1E1E1E;
-            --fondo-claro: #2A2A2A; /* Usado para tarjetas y sidebar */
-            --color-letra: white;
-            --color-azul-electrico: #00B0FF;
-            --color-azul-transicion-botones: #0086CC;
-            --color-inputs: #333333;
-            --letra-titulos: 'Orbitron', sans-serif;
-            --letra-normal: 'Roboto', sans-serif;
-        }
-
-        /* 2. Reseteo Básico */
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: var(--letra-normal);
-            background-color: var(--fondo-oscuro);
-            color: var(--color-letra);
-            height: 100%;
-            overflow-x: hidden;
-        }
-
-        /* 3. Layout Principal (Sidebar + Contenido) */
-        .layout-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* --- ESTILOS DEL SIDEBAR (Igual a tu imagen) --- */
-        .sidebar {
-            width: 260px;
-            background-color: var(--fondo-claro); /* O un poco más oscuro si prefieres */
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #333;
-            flex-shrink: 0; /* Evita que se encoja */
-        }
-
-        .logo-nex {
-            font-family: var(--letra-titulos);
-            font-size: 2em;
-            color: var(--color-azul-electrico);
-            font-weight: bold;
-            margin-bottom: 40px;
-            letter-spacing: 2px;
-        }
-
-        .nav-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex-grow: 1;
-        }
-
-        .nav-item {
-            margin-bottom: 15px;
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: #ccc;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover {
-            background-color: var(--color-inputs);
-            color: var(--color-azul-electrico);
-            padding-left: 15px; /* Efecto de movimiento */
-        }
-
-        .nav-link i {
-            margin-right: 10px; /* Espacio para iconos si los usas */
-        }
-
-        .sidebar-footer {
-            margin-top: auto;
-            border-top: 1px solid #444;
-            padding-top: 20px;
-        }
-
-        /* --- CONTENIDO PRINCIPAL --- */
-        .main-content {
-            flex-grow: 1;
-            padding: 40px;
-            background-color: var(--fondo-oscuro);
-        }
-
-        /* Títulos */
-        h1.page-title {
-            font-family: var(--letra-titulos);
-            color: var(--color-azul-electrico);
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-
-        p.subtitle {
-            color: #aaa;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
-
-        /* Tarjeta del Formulario */
-        .form-card {
-            background-color: var(--fondo-claro);
-            padding: 40px;
-            border-radius: 15px;
-            max-width: 800px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-
-        /* Estilos de los inputs del formulario Django */
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-family: var(--letra-titulos); /* Títulos de campos estilo sci-fi */
-            font-size: 0.9em;
-            color: var(--color-azul-electrico);
-            letter-spacing: 1px;
-        }
-
-        /* Inputs y Textareas */
-        input[type="text"],
-        input[type="email"],
-        input[type="number"],
-        textarea,
-        select {
-            width: 100%;
-            background-color: var(--color-inputs);
-            border: 1px solid transparent;
-            color: var(--color-letra);
-            padding: 12px 15px;
-            border-radius: 6px;
-            font-family: var(--letra-normal);
-            font-size: 1rem;
-            box-sizing: border-box; /* Para que el padding no rompa el ancho */
-            transition: border 0.3s ease;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border: 1px solid var(--color-azul-electrico);
-            box-shadow: 0 0 8px rgba(0, 176, 255, 0.3);
-        }
-
-        .helptext {
-            display: block;
-            font-size: 0.8em;
-            color: #888;
-            margin-top: 5px;
-        }
-
-        /* Botones */
-        .btn-container {
-            display: flex;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-family: var(--letra-titulos);
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            font-size: 1rem;
-            transition: background 0.3s ease, transform 0.1s;
-        }
-
-        .btn-primary {
-            background-color: var(--color-azul-electrico);
-            color: white; /* Texto blanco sobre azul */
-        }
-
-        .btn-primary:hover {
-            background-color: var(--color-azul-transicion-botones);
-        }
-
-        .btn-secondary {
-            background-color: transparent;
-            border: 2px solid #555;
-            color: #aaa;
-        }
-
-        .btn-secondary:hover {
-            border-color: #777;
-            color: white;
-        }
-
-    </style>
 </head>
 <body>
 
-    <div class="layout-container">
-        
-        <aside class="sidebar">
-            <div class="logo-nex">NEX</div>
-            
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="#" class="nav-link">🩺 Hacer predicción individual</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'crear_paciente' %}" class="nav-link">💊 Añadir Paciente</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'lista_pacientes' %}" class="nav-link">📋 Lista de pacientes</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">📊 Estadísticas</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">📚 Biblioteca Médica</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">📰 Noticias</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">🎧 Soporte y Ayuda</a>
-                </li>
-            </ul>
-
-            <div class="sidebar-footer">
-                <a href="#" class="nav-link">👤 Perfil</a>
-                <a href="#" class="nav-link">↪ Cerrar sesión</a>
-            </div>
-        </aside>
-
-        <main class="main-content">
-            
-            <h1 class="page-title">Nueva Historia Clínica</h1>
-            
-            <p class="subtitle">
-                Paciente: <strong>{{ paciente.primer_nombre }} {{ paciente.primer_apellido }}</strong> 
-                <span style="color: var(--color-azul-electrico);">|</span> 
-                ID: {{ paciente.numero_identificacion }}
-            </p>
-
-            <div class="form-card">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    {% for field in form %}
-                    <div class="form-group">
-                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        
-                        {{ field }}
-                        
-                        {% if field.help_text %}
-                            <small class="helptext">{{ field.help_text }}</small>
-                        {% endif %}
-                        {% for error in field.errors %}
-                            <div style="color: #ff4d4d; font-size: 0.9em; margin-top: 5px;">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    {% endfor %}
-
-                    <div class="btn-container">
-                        <button type="submit" class="btn btn-primary">Guardar Historia</button>
-                        <a href="{% url 'lista_pacientes' %}" class="btn btn-secondary">Cancelar</a>
-                    </div>
-                </form>
-            </div>
-
-        </main>
+    <div class="header-top">
+        <div class="logo-nex">NEX</div>
     </div>
+
+    <h1 class="page-title">Nueva Historia Clínica</h1>
+    
+    <p class="subtitle">
+        Paciente: <strong>{{ paciente.primer_nombre }} {{ paciente.primer_apellido }}</strong> 
+        <span style="color: var(--color-azul-electrico); margin: 0 10px;">|</span> 
+        ID: {{ paciente.numero_identificacion }}
+    </p>
+
+    <div class="form-card">
+        <form method="post">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                
+                {{ field }}
+                
+                {% if field.help_text %}
+                    <small class="helptext">{{ field.help_text }}</small>
+                {% endif %}
+                
+                {% for error in field.errors %}
+                    <div style="color: #ff4d4d; font-size: 0.9em; margin-top: 5px;">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+            <div class="btn-container">
+                <a href="{% url 'lista_pacientes' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Siguiente</button>
+            </div>
+        </form>
+    </div>
+
+    <a href="{% url 'home' %}" class="back-link">← Volver al inicio</a>
 
 </body>
 </html>

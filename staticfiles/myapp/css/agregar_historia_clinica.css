@@ -1,0 +1,182 @@
+
+    /* --- 1. Variables --- */
+    :root {
+        --fondo-oscuro: #1E1E1E;
+        --fondo-claro: #2A2A2A;
+        --fondo-input: #333333;
+        --color-letra: #ffffff;
+        --color-azul-electrico: #00B0FF;
+        --color-azul-hover: #0086CC;
+        
+        --font-nex: 'Orbitron', sans-serif; 
+        --font-general: 'Roboto', sans-serif;
+    }
+
+    /* --- 2. Base --- */
+    * { box-sizing: border-box; }
+    
+    body {
+        margin: 0;
+        padding: 20px; /* Reducido para aprovechar espacio */
+        font-family: var(--font-general);
+        background-color: var(--fondo-oscuro);
+        color: var(--color-letra);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* --- 3. Encabezado --- */
+    .header-top { text-align: center; margin-bottom: 20px; }
+
+    .logo-nex {
+        font-family: var(--font-nex);
+        font-size: 2.5rem;
+        color: var(--color-azul-electrico);
+        font-weight: 700;
+        letter-spacing: 4px;
+        text-decoration: none;
+        display: inline-block;
+        text-shadow: 0 0 15px rgba(0, 176, 255, 0.4);
+        margin-bottom: 5px;
+    }
+
+    h1.page-title {
+        font-family: var(--font-general);
+        font-weight: 700;
+        color: var(--color-azul-electrico);
+        font-size: 1.8rem;
+        margin: 0 0 5px 0;
+        text-align: center;
+    }
+
+    p.subtitle {
+        font-family: var(--font-general);
+        color: #ccc;
+        margin-bottom: 25px;
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    p.subtitle strong { color: white; }
+
+    /* --- 4. Tarjeta del Formulario (EXPANDIDA) --- */
+    .form-card {
+        background-color: var(--fondo-claro);
+        padding: 40px; /* Un poco menos de padding interno para ganar espacio */
+        border-radius: 12px;
+        
+        /* AQUÍ ESTÁ EL CAMBIO PRINCIPAL: */
+        width: 100%; 
+        max-width: 96%; /* Ocupa casi toda la pantalla */
+        
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid #333;
+    }
+
+    /* --- 5. Inputs y Formulario --- */
+    .form-group { margin-bottom: 25px; }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-family: var(--font-general);
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--color-azul-electrico);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    input[type="text"], input[type="email"], input[type="number"],
+    input[type="date"], textarea, select {
+        width: 100%;
+        background-color: var(--fondo-input);
+        border: 1px solid #444;
+        color: white;
+        padding: 14px 16px;
+        border-radius: 6px;
+        font-family: var(--font-general);
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    /* Altura mínima para textareas para que se vean imponentes */
+    textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    input:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: var(--color-azul-electrico);
+        background-color: #252525;
+        box-shadow: 0 0 10px rgba(0, 176, 255, 0.2);
+    }
+
+    .helptext {
+        display: block;
+        font-family: var(--font-general);
+        font-size: 0.85rem;
+        color: #888;
+        margin-top: 6px;
+    }
+
+    /* --- 6. Botones --- */
+    .btn-container {
+        display: flex;
+        gap: 20px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #333;
+        justify-content: flex-end;
+    }
+
+    .btn {
+        padding: 12px 40px; /* Botones un poco más anchos */
+        border-radius: 6px;
+        font-family: var(--font-general);
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    /* Botón Primario */
+    .btn-primary {
+        background-color: var(--color-azul-electrico);
+        color: white;
+        border: 2px solid var(--color-azul-electrico);
+        box-shadow: 0 4px 15px rgba(0, 176, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--color-azul-hover);
+        border-color: var(--color-azul-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 176, 255, 0.3);
+    }
+
+    /* Botón Secundario */
+    .btn-secondary {
+        background-color: transparent;
+        border: 2px solid var(--color-azul-electrico);
+        color: var(--color-azul-electrico);
+    }
+
+    .btn-secondary:hover {
+        background-color: var(--color-azul-electrico);
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 176, 255, 0.2);
+    }
+
+    .back-link {
+        margin-top: 20px;
+        color: #666;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+    .back-link:hover { color: #999; }

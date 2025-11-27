@@ -1,60 +1,317 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Predicción Clínica</title>
-        <link rel="stylesheet" href="{% static 'myapp/css/styles_hacer_prediccion.css' %}"> 
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEX - Hacer Predicción</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-        <h1>Análisis de Predicción Clínica</h1>
-        <p>Ingresa la descripción clínica del paciente para obtener una predicción de la categoría.</p>
+    <style>
+        /* --- 1. Variables Globales --- */
+        :root {
+            --fondo-oscuro: #1E1E1E;
+            --fondo-claro: #2A2A2A;
+            --fondo-input: #333333;
+            --color-letra: #ffffff;
+            --color-azul-electrico: #00B0FF;
+            --color-azul-hover: #0086CC;
+            --color-verde-exito: #00e676;
+            --color-rojo-alerta: #ff5252;
+            
+            --font-nex: 'Orbitron', sans-serif; 
+            --font-general: 'Roboto', sans-serif;
+        }
 
-        <!-- Mostrar error general si no se ingresa texto -->
+        /* --- 2. Base --- */
+        * { box-sizing: border-box; }
+        
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            font-family: var(--font-general);
+            background-color: var(--fondo-oscuro);
+            color: var(--color-letra);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- 3. Encabezado --- */
+        .header-top { text-align: center; margin-bottom: 20px; }
+
+        .logo-nex {
+            font-family: var(--font-nex);
+            font-size: 3rem;
+            color: var(--color-azul-electrico);
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-decoration: none;
+            display: inline-block;
+            text-shadow: 0 0 15px rgba(0, 176, 255, 0.4);
+            margin-bottom: 10px;
+        }
+
+        h1.page-title {
+            font-family: var(--font-general);
+            font-weight: 700;
+            color: var(--color-azul-electrico);
+            font-size: 2rem;
+            margin: 0 0 10px 0;
+            text-align: center;
+        }
+
+        p.description {
+            color: #ccc;
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        /* --- 4. Tarjeta Principal --- */
+        .form-card {
+            background-color: var(--fondo-claro);
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 900px; /* Ancho cómodo para resultados */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid #333;
+        }
+
+        /* --- 5. Inputs y Formulario --- */
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-family: var(--font-general);
+            font-weight: 700;
+            color: var(--color-azul-electrico);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        textarea {
+            width: 100%;
+            background-color: var(--fondo-input);
+            border: 1px solid #444;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: var(--font-general);
+            font-size: 1rem;
+            min-height: 150px;
+            resize: vertical;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--color-azul-electrico);
+            background-color: #252525;
+            box-shadow: 0 0 10px rgba(0, 176, 255, 0.2);
+        }
+
+        /* Placeholder style */
+        ::placeholder { color: #666; font-style: italic; }
+
+        /* --- 6. Botones --- */
+        .btn {
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-family: var(--font-general);
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 1rem;
+            border: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--color-azul-electrico);
+            color: white;
+            width: 100%;
+            border: 2px solid var(--color-azul-electrico);
+            box-shadow: 0 4px 15px rgba(0, 176, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-azul-hover);
+            border-color: var(--color-azul-hover);
+            transform: translateY(-2px);
+        }
+
+        /* --- 7. Resultados (Consenso y Tabla) --- */
+        .resultado-container {
+            margin-top: 40px;
+            border-top: 1px solid #444;
+            padding-top: 30px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .consensus-box {
+            background-color: rgba(0, 176, 255, 0.05);
+            border-left: 4px solid var(--color-azul-electrico);
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .consensus-title {
+            color: var(--color-azul-electrico);
+            font-family: var(--font-nex);
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+
+        .consensus-stats {
+            display: flex;
+            gap: 20px;
+            color: #ccc;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Tabla Estilizada (Reemplazo del UL original) */
+        .tabla-resultados {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tabla-resultados th, .tabla-resultados td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        .tabla-resultados th {
+            background-color: #1a1a1a;
+            color: var(--color-azul-electrico);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        
+        .tabla-resultados tr:last-child td { border-bottom: none; }
+        .tabla-resultados tr:hover { background-color: #2c2c2c; }
+
+        /* --- 8. Mensajes Error --- */
+        .error-box {
+            background-color: rgba(255, 82, 82, 0.1);
+            border: 1px solid var(--color-rojo-alerta);
+            color: var(--color-rojo-alerta);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        /* Link volver */
+        .back-link {
+            margin-top: 25px;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { color: white; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-top">
+        <a href="{% url 'home' %}" class="logo-nex">NEX</a>
+    </div>
+
+    <h1 class="page-title">Análisis de Predicción Clínica</h1>
+    <p class="description">Ingresa la descripción clínica del paciente (síntomas, antecedentes, resultados de exámenes) para obtener una predicción basada en IA.</p>
+
+    <div class="form-card">
+        
         {% if error %}
-            <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+            <div class="error-box">
+                <strong>Error:</strong> {{ error }}
+            </div>
         {% endif %}
 
         <form method="post" action=".">
             {% csrf_token %}
-            <label for="texto_clinico">Descripción Clínica:</label><br>
-            <textarea id="texto_clinico" name="texto_clinico" placeholder="Patron: [Sexo] de [edad] años, [síntomas o asintomático]. [Antecedentes personales o familiares relevantes]. [Procedimientos realizados y resultados]. [Diagnóstico si aplica]. CEA de [valor] ng/mL." required>{{ texto_ingresado }}</textarea><br><br>
-            <button type="submit">Hacer Predicción</button>
+            <label for="texto_clinico">Descripción Clínica:</label>
+            
+            <textarea id="texto_clinico" name="texto_clinico" 
+                      placeholder="Patron: [Sexo] de [edad] años, [síntomas o asintomático]. [Antecedentes personales o familiares relevantes]. [Procedimientos realizados y resultados]. [Diagnóstico si aplica]. CEA de [valor] ng/mL." 
+                      required>{{ texto_ingresado }}</textarea>
+            
+            <button type="submit" class="btn btn-primary">Hacer Predicción</button>
         </form>
-        <div>
-            <a href="{% url 'home' %}">
-                <button>Inicio</button>
-            </a>
-        </div>
 
         {% if resultado_api %}
-        <hr>
-        <div class="resultado">
-            <h2>Resultado de la Predicción (Consenso)</h2>
+        <div class="resultado-container">
+            
+            <div class="consensus-box">
+                <h3 class="consensus-title">Conclusión General (Consenso)</h3>
+                <p style="font-size: 1.1rem; margin: 5px 0;">
+                    <strong>{{ resultado_api.consenso.resultado_general }}</strong>
+                </p>
+                <div class="consensus-stats">
+                    <span>✅ Acuerdo: {{ resultado_api.consenso.porcentaje_acuerdo }}%</span>
+                    <span>🟢 Votos CO: {{ resultado_api.consenso.votos_CO }}</span>
+                    <span>🔴 Votos CRC: {{ resultado_api.consenso.votos_CRC }}</span>
+                </div>
+            </div>
 
-            <p><strong>Texto Analizado:</strong> {{ texto_ingresado }}</p>
+            <h4 style="color:white; margin-bottom: 15px;">Detalle por Modelo</h4>
+            <table class="tabla-resultados">
+                <thead>
+                    <tr>
+                        <th>Modelo</th>
+                        <th>Predicción</th>
+                        <th>Prob. CO (Sano)</th>
+                        <th>Prob. CRC (Cáncer)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in resultado_api.predicciones %}
+                    <tr>
+                        <td>{{ item.modelo }}</td>
+                        <td>
+                            {% if "CRC" in item.prediccion or "Cancer" in item.prediccion %}
+                                <span style="color: var(--color-rojo-alerta); font-weight: bold;">{{ item.prediccion }}</span>
+                            {% else %}
+                                <span style="color: var(--color-verde-exito); font-weight: bold;">{{ item.prediccion }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.probabilidad_CO }}%</td>
+                        <td>{{ item.probabilidad_CRC }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 20px; font-size: 0.9rem; color: #888;">
+                <strong>Texto Analizado:</strong> {{ texto_ingresado }}
+            </div>
 
-            <h3>Conclusión General</h3>
-            <p><strong>{{ resultado_api.consenso.resultado_general }}</strong></p>
-            <p>Votos CO: {{ resultado_api.consenso.votos_CO }}</p>
-            <p>Votos CRC: {{ resultado_api.consenso.votos_CRC }}</p>
-            <p>Acuerdo: {{ resultado_api.consenso.porcentaje_acuerdo }}%</p>
-
-            <h3>Predicciones por Modelo</h3>
-            <ul>
-            {% for item in resultado_api.predicciones %}
-                <li>
-                    <strong>{{ item.modelo }}:</strong>
-                    {{ item.prediccion }}
-                    — CO: {{ item.probabilidad_CO }}%
-                    — CRC: {{ item.probabilidad_CRC }}%
-                </li>
-            {% endfor %}
-            </ul>
         </div>
         {% endif %}
-    </body>
+
+    </div>
+
+    <a href="{% url 'home' %}" class="back-link">← Volver al Inicio</a>
+
+</body>
 </html>
