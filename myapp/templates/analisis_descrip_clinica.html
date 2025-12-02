@@ -295,7 +295,7 @@
         <form method="post">
             {% csrf_token %}
             <label for="texto_clinico">Descripción Clínica / Síntomas:</label>
-            <textarea id="texto_clinico" name="texto_clinico" placeholder="Ingrese aquí los síntomas, antecedentes y detalles clínicos del paciente..." required>{{ texto_ingresado }}</textarea>
+            <textarea id="texto_clinico" name="texto_clinico" placeholder="Patron: [Sexo] de [edad] años, [síntomas o asintomático]. [Antecedentes personales o familiares relevantes]. [Procedimientos realizados y resultados]. [Diagnóstico si aplica]. CEA de [valor] ng/mL."  required>{{ texto_ingresado }}</textarea>
             
             <button type="submit" name="accion" value="analizar" class="btn btn-analizar">
                  Analizar
@@ -370,10 +370,6 @@
         {% endif %}
 
     </div>
-
-    {% if not mensaje_exito %}
-    <a href="{% url 'home' %}" class="back-link">← Cancelar y Volver</a>
-    {% endif %}
 
 </body>
 </html>
