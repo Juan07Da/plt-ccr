@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEX - Biblioteca Médica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{% static 'myapp/css/biblioteca.css' %}">
+</head>
+<body>
+
+    <div class="header-container">
+        <div class="logo-area">NEX</div>
+        
+        <div class="title-area">Biblioteca Médica Especializada</div>
+        
+        <a href="{% url 'home' %}" class="btn-back">⬅ Volver al Inicio</a>
+    </div>
+
+    <div class="main-container">
+        
+        <h2 class="section-title">Guías Clínicas y Libros</h2>
+        <div class="grid-container">
+            {% for libro in libros %}
+            <div class="card-recurso">
+                <div class="card-icon">
+                    <img src="{% static 'myapp/icon/biblioteca medica.png' %}" alt="Libro">
+                </div>
+                <div class="card-content">
+                    <h3>{{ libro.titulo }}</h3>
+                    <span class="author">{{ libro.autor }}</span>
+                    <p>{{ libro.descripcion|truncatechars:100 }}</p>
+                    <a href="{{ libro.url_recurso }}" target="_blank" class="btn-leer">Leer Documento</a>
+                </div>
+            </div>
+            {% empty %}
+                <p class="empty-msg">No hay libros registrados aún.</p>
+            {% endfor %}
+        </div>
+
+        <h2 class="section-title">Artículos Científicos</h2>
+        <div class="grid-container">
+            {% for articulo in articulos %}
+            <div class="card-recurso">
+                <div class="card-icon">
+                    <img src="{% static 'myapp/icon/noticias.png' %}" alt="Articulo">
+                </div>
+                <div class="card-content">
+                    <h3>{{ articulo.titulo }}</h3>
+                    <span class="author">{{ articulo.autor }}</span>
+                    <p>{{ articulo.descripcion|truncatechars:100 }}</p>
+                    <a href="{{ articulo.url_recurso }}" target="_blank" class="btn-leer">Ver Artículo</a>
+                </div>
+            </div>
+            {% empty %}
+                <p class="empty-msg">No hay artículos registrados aún.</p>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEX - Noticias</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{% static 'myapp/css/noticias.css' %}">
+</head>
+<body>
+
+    <div class="header-container">
+        <div class="logo-area">NEX</div>
+        <div class="title-area">Actualidad y Noticias</div>
+        <a href="{% url 'home' %}" class="btn-back">⬅ Volver al Inicio</a>
+    </div>
+
+    <div class="main-container">
+        <div class="news-grid">
+            {% for noticia in noticias %}
+            <article class="news-card">
+                <div class="news-image" style="background-image: url('{{ noticia.url_imagen }}');"></div>
+                
+                <div class="news-content">
+                    <div class="news-meta">
+                        <span class="source">{{ noticia.fuente }}</span>
+                        <span class="date">{{ noticia.fecha_publicacion|date:"d M Y" }}</span>
+                    </div>
+                    
+                    <h3>{{ noticia.titulo }}</h3>
+                    <p>{{ noticia.resumen|truncatechars:120 }}</p>
+                    
+                    <a href="{{ noticia.url_noticia }}" target="_blank" class="read-more">
+                        Leer completa →
+                    </a>
+                </div>
+            </article>
+            {% empty %}
+            <div class="empty-state">
+                <p>No hay noticias registradas por el momento.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

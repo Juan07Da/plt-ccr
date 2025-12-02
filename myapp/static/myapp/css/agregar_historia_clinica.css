@@ -1,5 +1,4 @@
-
-    /* --- 1. Variables --- */
+/* --- 1. Variables --- */
     :root {
         --fondo-oscuro: #1E1E1E;
         --fondo-claro: #2A2A2A;
@@ -17,7 +16,7 @@
     
     body {
         margin: 0;
-        padding: 20px; /* Reducido para aprovechar espacio */
+        padding: 20px;
         font-family: var(--font-general);
         background-color: var(--fondo-oscuro);
         color: var(--color-letra);
@@ -36,8 +35,6 @@
         color: var(--color-azul-electrico);
         font-weight: 700;
         letter-spacing: 4px;
-        text-decoration: none;
-        display: inline-block;
         text-shadow: 0 0 15px rgba(0, 176, 255, 0.4);
         margin-bottom: 5px;
     }
@@ -47,30 +44,63 @@
         font-weight: 700;
         color: var(--color-azul-electrico);
         font-size: 1.8rem;
-        margin: 0 0 5px 0;
+        margin: 0 0 20px 0;
         text-align: center;
+        padding: 15px;
     }
 
-    p.subtitle {
-        font-family: var(--font-general);
-        color: #ccc;
-        margin-bottom: 25px;
+    /* --- 3.5 TARJETA DE INFORMACIÓN DEL PACIENTE (NUEVO) --- */
+    .patient-info-card {
+        background-color: #252525; /* Ligeramente diferente al form para contraste */
+        width: 100%;
+        max-width: 70%; /* Un poco más ancho que antes para que quepan los datos */
+        border-radius: 8px;
+        border: 1px solid var(--color-azul-electrico);
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .info-title {
+        color: var(--color-azul-electrico);
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        border-bottom: 1px solid #444;
+        padding-bottom: 10px;
+    }
+
+    .patient-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info-item .label {
+        font-size: 0.8rem;
+        color: #aaa;
+        font-weight: 500;
+    }
+
+    .info-item .value {
         font-size: 1rem;
-        text-align: center;
+        color: white;
+        font-weight: 400;
     }
 
-    p.subtitle strong { color: white; }
-
-    /* --- 4. Tarjeta del Formulario (EXPANDIDA) --- */
+    /* --- 4. Tarjeta del Formulario --- */
     .form-card {
         background-color: var(--fondo-claro);
-        padding: 40px; /* Un poco menos de padding interno para ganar espacio */
+        padding: 40px;
         border-radius: 12px;
-        
-        /* AQUÍ ESTÁ EL CAMBIO PRINCIPAL: */
         width: 100%; 
-        max-width: 96%; /* Ocupa casi toda la pantalla */
-        
+        max-width: 70%; /* Aumentado para coincidir con la info del paciente */
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
         border: 1px solid #333;
     }
@@ -89,8 +119,7 @@
         letter-spacing: 0.5px;
     }
 
-    input[type="text"], input[type="email"], input[type="number"],
-    input[type="date"], textarea, select {
+    input[type="text"], textarea, select {
         width: 100%;
         background-color: var(--fondo-input);
         border: 1px solid #444;
@@ -102,25 +131,22 @@
         transition: border-color 0.3s, box-shadow 0.3s;
     }
 
-    /* Altura mínima para textareas para que se vean imponentes */
     textarea {
         min-height: 120px;
         resize: vertical;
     }
 
-    input:focus, textarea:focus, select:focus {
+    input:focus, textarea:focus {
         outline: none;
         border-color: var(--color-azul-electrico);
         background-color: #252525;
         box-shadow: 0 0 10px rgba(0, 176, 255, 0.2);
     }
 
-    .helptext {
-        display: block;
-        font-family: var(--font-general);
-        font-size: 0.85rem;
-        color: #888;
-        margin-top: 6px;
+    .error-msg {
+        color: #ff4d4d; 
+        font-size: 0.9em; 
+        margin-top: 5px;
     }
 
     /* --- 6. Botones --- */
@@ -134,7 +160,7 @@
     }
 
     .btn {
-        padding: 12px 40px; /* Botones un poco más anchos */
+        padding: 12px 40px;
         border-radius: 6px;
         font-family: var(--font-general);
         font-weight: 700;
@@ -145,22 +171,18 @@
         text-align: center;
     }
 
-    /* Botón Primario */
     .btn-primary {
         background-color: var(--color-azul-electrico);
         color: white;
         border: 2px solid var(--color-azul-electrico);
-        box-shadow: 0 4px 15px rgba(0, 176, 255, 0.2);
     }
 
     .btn-primary:hover {
         background-color: var(--color-azul-hover);
         border-color: var(--color-azul-hover);
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 176, 255, 0.3);
     }
 
-    /* Botón Secundario */
     .btn-secondary {
         background-color: transparent;
         border: 2px solid var(--color-azul-electrico);
@@ -170,7 +192,6 @@
     .btn-secondary:hover {
         background-color: var(--color-azul-electrico);
         color: white;
-        box-shadow: 0 4px 15px rgba(0, 176, 255, 0.2);
     }
 
     .back-link {

@@ -28,13 +28,13 @@
                             <div class="lista"><a href="{% url 'lista_pacientes' %}"><img src="{% static 'myapp/icon/historia clinica.png' %}" alt="">Lista de pacientes</a></div>
                         </li>
                         <li>
-                            <div class="lista"><a href="#"><img src="{% static 'myapp/icon/biblioteca medica.png' %}" alt="">Biblioteca Médica</a></div>
+                            <div class="lista"><a href="{% url 'biblioteca_medica' %}"><img src="{% static 'myapp/icon/biblioteca medica.png' %}" alt="">Biblioteca Médica</a></div>
                         </li>
                         <li>
-                            <div class="lista"><a href="#"><img src="{% static 'myapp/icon/noticias.png' %}" alt="">Noticias</a></div>
+                            <div class="lista"><a href="{% url 'noticias' %}"><img src="{% static 'myapp/icon/noticias.png' %}" alt="">Noticias</a></div>
                         </li>
                         <li>
-                            <div class="lista"><a href="#"><img src="{% static 'myapp/icon/soporte y ayuda.png' %}" alt="">Soporte y Ayuda</a></div>
+                            <div class="lista"><a href="{% url 'soporte' %}"><img src="{% static 'myapp/icon/soporte y ayuda.png' %}" alt="">Soporte y Ayuda</a></div>
                         </li>
                     </ul>
                 </nav>
@@ -46,7 +46,7 @@
                             <div class="lista"><a class="l1" href="{% url 'perfil' %}">Perfil <img src="{% static 'myapp/icon/perfil.png' %}" alt=""></a></div>         
                         </li>
                         <li>
-                            <div class="lista"><a class="l1" href="{% url 'logout' %}">Cerrar sesión <img src="{% static 'myapp/icon/cerrar sesion.png' %}" alt=""></a></div>
+                            <div class="lista"><a class="l1" href="{% url 'logout' %}">Cerrar sesión &nbsp <img src="{% static 'myapp/icon/cerrar sesion.png' %}" alt=""></a></div>
                         </li>
                     </ul>
                 </nav>
@@ -72,14 +72,14 @@
                     </a>
                 </div>
                 <div class="cards2">
-                    <button class="btn">
+                    <a href="{% url 'biblioteca_medica' %}" class="btn">
                         <div class="texto_btn">Ver<br>Biblioteca <br> Medica</div>
                         <div class="img_btn"><img src="{% static 'myapp/icon/biblioteca medica.png' %}" alt=""></div>
-                    </button>
-                    <button class="btn">
+                    </a>
+                    <a href="{% url 'perfil' %}" class="btn">
                         <div class="texto_btn">Perfil</div>
                         <div class="img_btn"><img src="{% static 'myapp/icon/perfil.png' %}" alt=""></div>
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="logos">

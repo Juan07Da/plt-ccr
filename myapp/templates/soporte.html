@@ -1,0 +1,307 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEX - Soporte y Ayuda</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- ESTILOS CSS INTEGRADOS --- */
+        :root {
+            --fondo-oscuro: #1E1E1E;
+            --fondo-claro: #2A2A2A;
+            --color-letra: #ffffff;
+            --color-azul-electrico: #00B0FF;
+            --color-azul-hover: #0086CC;
+            --font-nex: 'Orbitron', sans-serif;
+            --font-general: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--fondo-oscuro);
+            color: var(--color-letra);
+            font-family: var(--font-general);
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--fondo-claro);
+            padding: 15px 30px;
+            border-radius: 10px;
+            border-bottom: 2px solid var(--color-azul-electrico);
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .logo-area {
+            font-family: var(--font-nex);
+            font-size: 2.2rem;
+            color: var(--color-azul-electrico);
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 176, 255, 0.4);
+        }
+
+        .title-area { 
+            font-size: 1.3rem; 
+            font-weight: 500; 
+            color: #eee;
+        }
+
+        .btn-back {
+            background-color: #333; color: #ccc;
+            text-decoration: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 500;
+            border: 1px solid #444; transition: 0.3s;
+        }
+        .btn-back:hover { 
+            border-color: var(--color-azul-electrico); 
+            color: white; 
+            background-color: #444;
+        }
+
+        /* Layout Principal */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-container { grid-template-columns: 1fr; }
+        }
+
+        .support-card {
+            background-color: var(--fondo-claro);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #333;
+            height: fit-content;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            color: var(--color-azul-electrico);
+            margin-top: 0;
+            font-family: var(--font-nex); /* Opcional: usar Roboto si prefieres */
+            font-size: 1.5rem;
+            border-bottom: 1px solid #444;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .desc {
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        /* Formulario */
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #ddd; }
+
+        /* Estilos para inputs forzados a oscuro */
+        input[type="text"], textarea, select, input[type="email"] {
+            width: 100%;
+            background-color: #333 !important;
+            border: 1px solid #444;
+            color: white !important;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: var(--font-general);
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus {
+            outline: none; border-color: var(--color-azul-electrico);
+        }
+
+        .btn-send {
+            width: 100%;
+            background-color: var(--color-azul-electrico);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-send:hover { background-color: var(--color-azul-hover); }
+
+        .contact-info {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #555;
+            font-size: 0.95rem;
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .contact-info strong { color: var(--color-azul-electrico); }
+
+        .success-msg {
+            background-color: rgba(0, 176, 255, 0.1);
+            color: var(--color-azul-electrico);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid var(--color-azul-electrico);
+            font-weight: bold;
+        }
+
+        /* Acordeón FAQs */
+        .accordion-item {
+            border-bottom: 1px solid #444;
+        }
+        .accordion-header {
+            width: 100%;
+            background: none;
+            border: none;
+            color: white;
+            text-align: left;
+            padding: 20px 0;
+            font-size: 1.05rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-general);
+            transition: color 0.3s;
+        }
+        .accordion-header:hover { color: var(--color-azul-electrico); }
+        .accordion-content {
+            display: none;
+            padding-bottom: 20px;
+            color: #bbb;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        .icon {
+            font-size: 1.5rem;
+            color: var(--color-azul-electrico);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <div class="logo-area">NEX</div>
+        <div class="title-area">Centro de Ayuda</div>
+        <a href="{% url 'home' %}" class="btn-back">⬅ Volver al Inicio</a>
+    </div>
+
+    <div class="main-container">
+        
+        <div class="support-card form-section">
+            <h2>📩 Contáctanos</h2>
+            <p class="desc">Si tienes problemas técnicos, envíanos un mensaje.</p>
+            
+            {% if enviado %}
+                <div class="success-msg">
+                    ✅ ¡Mensaje enviado! Nos pondremos en contacto contigo.
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Asunto:</label>
+                    {{ form.asunto }}
+                </div>
+                <div class="form-group">
+                    <label>Mensaje:</label>
+                    {{ form.mensaje }}
+                </div>
+                <button type="submit" class="btn-send">Enviar Mensaje</button>
+            </form>
+
+            <div class="contact-info">
+                <p><strong>Email:</strong> cancerproyecto0@gmail.com</p>
+                <p><strong>Teléfono:</strong> 304 646 7777</p>
+                <p><strong>Ubicación:</strong> Calle 8ª N° 8-155, Pamplona, Norte de Santander (ISER)</p>
+            </div>
+        </div>
+
+        <div class="support-card faq-section">
+            <h2>❓ Preguntas Frecuentes</h2>
+            
+            <div class="accordion">
+                
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        ¿Cómo creo una historia clínica? <span class="icon">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p>Para crear una historia clínica, primero debes ir a la sección "Lista de Pacientes", buscar al paciente deseado y hacer clic en el botón "Agregar Historia" que aparece en la columna de acciones.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        ¿Qué hago si olvidé mi contraseña? <span class="icon">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p>Si has olvidado tu contraseña, por favor comunícate directamente con el administrador del sistema al correo o teléfono de soporte indicados en esta página para gestionar el restablecimiento de tus credenciales de forma segura o restablecela en olvide mi contraseña antes de iniciar sesion.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        ¿Cómo hago si creé un registro mal? <span class="icon">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <p>Debes contactarte con el admin ya que solo se puede modificar registros desde el modo admin.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Lógica del acordeón para desplegar respuestas
+        const headers = document.querySelectorAll('.accordion-header');
+        headers.forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const icon = header.querySelector('.icon');
+                
+                // Cerrar otros (opcional: para que solo uno esté abierto a la vez)
+                document.querySelectorAll('.accordion-content').forEach(c => {
+                    if(c !== content) c.style.display = 'none';
+                });
+                document.querySelectorAll('.icon').forEach(i => {
+                    if(i !== icon) i.textContent = '+';
+                });
+
+                // Alternar el actual
+                if (content.style.display === 'block') {
+                    content.style.display = 'none';
+                    icon.textContent = '+';
+                } else {
+                    content.style.display = 'block';
+                    icon.textContent = '-';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -6,24 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ titulo }}</title>
     <link rel="stylesheet" href="{% static 'myapp/css/lista_pacientes.css' %}">
-
 </head>
 <body>
 
 <div class="container">
     <div class="header-title">
-        {{ titulo }}
+        <span>{{ titulo }}</span>
+        <a href="{% url 'home' %}" class="add-button" style="background-color: #444; margin-bottom: 0; font-size: 0.9rem; padding: 10px 20px;">
+            ⬅ Volver al Inicio
+        </a>
     </div>
     
     <div class="content-body">
         
         <a href="{% url 'crear_paciente' %}" class="add-button">
-            + Añadir Nuevo Paciente
+            Añadir Nuevo Paciente
         </a>
 
         <div class="search-container">
             <form method="GET" action="" style="display: flex; width: 100%; gap: 10px;">
-                <input type="text" name="q" class="search-input" placeholder="Buscar por número de identificación..." value="{{ request.GET.q }}">
+                <input type="text" name="q" class="search-input" placeholder="Buscar paciente por su número de identificación" value="{{ request.GET.q }}">
                 <button type="submit" class="search-button">Buscar</button>
                 
                 {% if request.GET.q %}
@@ -80,12 +82,7 @@
             </div>
         {% endif %}
         
-        <br>
-        <a href="{% url 'home' %}" class="add-button" style="background-color: #6c757d;">
-            Volver al Inicio
-        </a>
-
-    </div>
+        </div>
 </div>
 
 </body>

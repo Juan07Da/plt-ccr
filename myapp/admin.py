@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import AppUser, Paciente, HistoriaClinica, AnalisisFinal
+from .models import AppUser, Paciente, HistoriaClinica, AnalisisFinal, RecursoMedico, Noticia
 
 @admin.register(AppUser)
 class AppUserAdmin(admin.ModelAdmin):
@@ -133,3 +133,7 @@ class AnalisisFinalAdmin(admin.ModelAdmin):
     
     # Filtros laterales para ver rápidamente cuántos CCR o CO hay
     list_filter = ('diagnostico_final', 'fecha_analisis')
+
+admin.site.register(RecursoMedico)
+
+admin.site.register(Noticia)

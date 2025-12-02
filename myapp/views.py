@@ -2,11 +2,11 @@ from itertools import zip_longest
 import json
 import re
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import AppUser, Paciente, HistoriaClinica
+from .models import AppUser, Paciente, HistoriaClinica, RecursoMedico, Noticia
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from .services.prediccion_service import obtener_predicciones
-from .forms import PacienteForm, HistoriaClinicaForm, AnalisisFinal, PerfilForm
+from .forms import PacienteForm, HistoriaClinicaForm, AnalisisFinal, PerfilForm, SoporteForm
 from datetime import date
 from django.db import transaction
 from django.forms import inlineformset_factory
@@ -655,3 +655,44 @@ def perfil_view(request):
         form = PerfilForm(instance=usuario)
 
     return render(request, 'perfil.html', {'form': form})
+
+def biblioteca_medica(request):
+    # Verificamos sesión
+    if not request.session.get("authenticated_user"):
+        return redirect("login")
+
+    # Filtramos por tipo para enviarlos separados
+    libros = RecursoMedico.objects.filter(tipo='LIBRO')
+    articulos = RecursoMedico.objects.filter(tipo='ARTICULO')
+    videos = RecursoMedico.objects.filter(tipo='VIDEO')
+
+    context = {
+        'libros': libros,
+        'articulos': articulos,
+        'videos': videos
+    }
+    return render(request, 'biblioteca_medica.html', context)
+
+def noticias_view(request):
+    if not request.session.get("authenticated_user"):
+        return redirect("login")
+
+    noticias = Noticia.objects.all()
+
+    return render(request, 'noticias.html', {'noticias': noticias})
+
+def soporte_view(request):
+    if not request.session.get("authenticated_user"):
+        return redirect("login")
+
+    enviado = False
+    if request.method == 'POST':
+        form = SoporteForm(request.POST)
+        if form.is_valid():
+            # Aquí podrías agregar lógica para enviar email real si quisieras
+            enviado = True
+            form = SoporteForm() # Limpiamos el form
+    else:
+        form = SoporteForm()
+
+    return render(request, 'soporte.html', {'form': form, 'enviado': enviado})

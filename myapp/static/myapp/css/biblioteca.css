@@ -1,0 +1,176 @@
+/* --- 1. Variables y Fuentes --- */
+:root {
+    --fondo-oscuro: #1E1E1E;
+    --fondo-claro: #2A2A2A;
+    --color-letra: #ffffff;
+    --color-azul-electrico: #00B0FF;
+    --color-azul-hover: #0086CC;
+    
+    --font-nex: 'Orbitron', sans-serif;  /* Solo para el logo NEX */
+    --font-general: 'Roboto', sans-serif; /* Para todo lo demás */
+}
+
+/* --- 2. Estilos Base (Roboto por defecto) --- */
+body {
+    background-color: var(--fondo-oscuro);
+    color: var(--color-letra);
+    font-family: var(--font-general); /* APLICADO A TODO EL CUERPO */
+    margin: 0;
+    padding: 20px;
+}
+
+/* --- 3. Header --- */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--fondo-claro);
+    padding: 15px 30px;
+    border-radius: 10px;
+    border-bottom: 2px solid var(--color-azul-electrico);
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* ÚNICO ELEMENTO CON ORBITRON */
+.logo-area {
+    font-family: var(--font-nex);
+    font-size: 2.2rem;
+    color: var(--color-azul-electrico);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 176, 255, 0.4);
+}
+
+/* El resto usa la fuente por defecto (Roboto) */
+.title-area {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #eee;
+}
+
+.btn-back {
+    background-color: #333;
+    color: #ccc;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    border: 1px solid #444;
+    transition: 0.3s;
+    font-size: 0.9rem;
+}
+
+.btn-back:hover {
+    background-color: #444;
+    color: white;
+    border-color: var(--color-azul-electrico);
+}
+
+/* --- 4. Secciones --- */
+.section-title {
+    font-family: var(--font-general); /* Aseguramos Roboto aquí también */
+    color: var(--color-azul-electrico);
+    border-left: 5px solid var(--color-azul-electrico);
+    padding-left: 15px;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase; /* Opcional: para que se vea más ordenado */
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- 5. Grid de Tarjetas --- */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 50px;
+}
+
+.card-recurso {
+    background-color: var(--fondo-claro);
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 25px;
+    transition: transform 0.3s, border-color 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-recurso:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-azul-electrico);
+    box-shadow: 0 8px 20px rgba(0, 176, 255, 0.15);
+}
+
+.card-icon {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.card-icon img {
+    width: 48px;
+    height: 48px;
+    /* Si tus iconos son negros, descomenta esto para volverlos blancos: */
+    /* filter: invert(1); */ 
+}
+
+.card-content h3 {
+    margin: 0 0 8px 0;
+    color: white;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    font-weight: 700;
+}
+
+.card-content .author {
+    display: block;
+    color: var(--color-azul-electrico);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.card-content p {
+    color: #bbb;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    flex-grow: 1;
+    margin-bottom: 20px;
+}
+
+.btn-leer {
+    display: block;
+    text-align: center;
+    background-color: transparent;
+    border: 1px solid var(--color-azul-electrico);
+    color: var(--color-azul-electrico);
+    padding: 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.btn-leer:hover {
+    background-color: var(--color-azul-electrico);
+    color: white;
+}
+
+.empty-msg {
+    color: #666;
+    font-style: italic;
+    grid-column: 1 / -1; /* Ocupa todo el ancho si está vacío */
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(255,255,255,0.05);
+    border-radius: 8px;
+}

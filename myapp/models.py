@@ -26,7 +26,6 @@ class AppUser(models.Model):
         self.verification_code = str(random.randint(100000, 999999))
         self.save()
 
-
 class Paciente(models.Model):
     # Opciones para campos de selección
     TIPO_ID_CHOICES = (
@@ -207,3 +206,47 @@ class AnalisisFinal(models.Model):
 
     def __str__(self):
         return f"Análisis: {self.get_diagnostico_final_display()} - {self.paciente.primer_apellido}"
+    
+class RecursoMedico(models.Model):
+    TIPO_CHOICES = (
+        ('LIBRO', 'Libro / Guía'),
+        ('ARTICULO', 'Artículo Científico'),
+        ('VIDEO', 'Video / Conferencia'),
+    )
+
+    titulo = models.CharField(max_length=200, verbose_name="Título del Recurso")
+    autor = models.CharField(max_length=150, verbose_name="Autor / Institución")
+    descripcion = models.TextField(verbose_name="Breve Descripción")
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='ARTICULO')
+    
+    # Aquí guardamos el link externo (PDF, web, youtube)
+    url_recurso = models.URLField(verbose_name="Enlace al recurso")
+    
+    # Opcional: Una imagen de portada (si no quieres complicarte con imágenes, podemos usar iconos genéricos en el HTML)
+    imagen_url = models.URLField(blank=True, null=True, verbose_name="URL de Imagen de Portada (Opcional)")
+
+    fecha_publicacion = models.DateField(blank=True, null=True, verbose_name="Fecha de Publicación")
+
+    def __str__(self):
+        return self.titulo
+    
+class Noticia(models.Model):
+    titulo = models.CharField(max_length=200, verbose_name="Titular de la Noticia")
+    resumen = models.TextField(verbose_name="Resumen Breve")
+    
+    # Guardamos el link de la noticia original
+    url_noticia = models.URLField(verbose_name="Enlace a la Noticia Completa")
+    
+    # Guardamos el link de una imagen para la portada
+    url_imagen = models.URLField(verbose_name="URL de la Imagen de Portada")
+    
+    fuente = models.CharField(max_length=100, verbose_name="Nombre de la Fuente (Ej. El Tiempo)")
+    fecha_publicacion = models.DateField(auto_now_add=True, verbose_name="Fecha de Publicación")
+
+    class Meta:
+        verbose_name = "Noticia"
+        verbose_name_plural = "Noticias"
+        ordering = ['-fecha_publicacion'] # Las más recientes primero
+
+    def __str__(self):
+        return self.titulo

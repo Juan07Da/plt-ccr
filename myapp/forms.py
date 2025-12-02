@@ -55,7 +55,6 @@ class HistoriaClinicaForm(forms.ModelForm):
             'diagnostico_principal': 'Diagnóstico del Profesional',
         }
 
-
 class AnalisisFinalForm(forms.ModelForm):
     class Meta:
         model = AnalisisFinal
@@ -67,8 +66,6 @@ class AnalisisFinalForm(forms.ModelForm):
             'predicciones_nlp': forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'placeholder': 'Datos JSON generados por el modelo...'}),
             'diagnostico_final': forms.Select(attrs={'class': 'form-select'}),
         }
-
-
 
 class PerfilForm(forms.ModelForm):
     password = forms.CharField(
@@ -129,3 +126,7 @@ class PerfilForm(forms.ModelForm):
             raise ValidationError('La contraseña debe incluir al menos 1 carácter especial.')
 
         return password
+    
+class SoporteForm(forms.Form):
+    asunto = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    mensaje = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))

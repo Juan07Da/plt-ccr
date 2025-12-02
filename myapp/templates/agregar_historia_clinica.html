@@ -9,42 +9,85 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="{% static 'myapp/css/agregar_historia_clinica.css' %}">
-
+    <link rel="stylesheet" href="{% static 'myapp/css/agregar_historia_clinica.css' %}">
 </head>
 <body>
 
-    <div class="header-top">
-        <div class="logo-nex">NEX</div>
-    </div>
-
     <h1 class="page-title">Nueva Historia Clínica</h1>
     
-    <p class="subtitle">
-        Paciente: <strong>{{ paciente.primer_nombre }} {{ paciente.primer_apellido }}</strong> 
-        <span style="color: var(--color-azul-electrico); margin: 0 10px;">|</span> 
-        ID: {{ paciente.numero_identificacion }}
-    </p>
+    <div class="patient-info-card">
+        <h3 class="info-title">Información del Paciente</h3>
+        <div class="patient-grid">
+            <div class="info-item">
+                <span class="label">Paciente:</span>
+                <span class="value">{{ paciente.primer_nombre }} {{ paciente.segundo_nombre|default:"" }} {{ paciente.primer_apellido }} {{ paciente.segundo_apellido|default:"" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Identificación:</span>
+                <span class="value">{{ paciente.get_tipo_identificacion_display }}: {{ paciente.numero_identificacion }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Edad:</span>
+                <span class="value">{{ paciente.edad }} años</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Sexo:</span>
+                <span class="value">{{ paciente.get_sexo_display }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Fecha Nacimiento:</span>
+                <span class="value">{{ paciente.fecha_nacimiento }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Estado Civil:</span>
+                <span class="value">{{ paciente.get_estado_civil_display }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Teléfono:</span>
+                <span class="value">{{ paciente.telefono|default:"No registrado" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Dirección:</span>
+                <span class="value">{{ paciente.direccion_residencia }}</span>
+            </div>
+        </div>
+    </div>
 
     <div class="form-card">
         <form method="post">
             {% csrf_token %}
             
-            {% for field in form %}
             <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                
-                {{ field }}
-                
-                {% if field.help_text %}
-                    <small class="helptext">{{ field.help_text }}</small>
+                <label for="{{ form.sintomas_actuales.id_for_label }}">Síntomas del Paciente</label>
+                {{ form.sintomas_actuales }}
+                {% if form.sintomas_actuales.errors %}
+                    <div class="error-msg">{{ form.sintomas_actuales.errors }}</div>
                 {% endif %}
-                
-                {% for error in field.errors %}
-                    <div style="color: #ff4d4d; font-size: 0.9em; margin-top: 5px;">{{ error }}</div>
-                {% endfor %}
             </div>
-            {% endfor %}
+
+            <div class="form-group">
+                <label for="{{ form.tratamientos_actuales.id_for_label }}">Tratamientos / Exámenes Realizados</label>
+                {{ form.tratamientos_actuales }}
+                {% if form.tratamientos_actuales.errors %}
+                    <div class="error-msg">{{ form.tratamientos_actuales.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.otras_comorbilidades.id_for_label }}">Otras Comorbilidades y Antecedentes</label>
+                {{ form.otras_comorbilidades }}
+                {% if form.otras_comorbilidades.errors %}
+                    <div class="error-msg">{{ form.otras_comorbilidades.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.diagnostico_principal.id_for_label }}">Diagnóstico del Profesional</label>
+                {{ form.diagnostico_principal }}
+                {% if form.diagnostico_principal.errors %}
+                    <div class="error-msg">{{ form.diagnostico_principal.errors }}</div>
+                {% endif %}
+            </div>
 
             <div class="btn-container">
                 <a href="{% url 'lista_pacientes' %}" class="btn btn-secondary">Cancelar</a>
