@@ -19,10 +19,10 @@
 body {
     background-color: var(--fondo-oscuro);
     color: var(--color-letra);
-    font-family: var(--font-general); /* Todo por defecto en Roboto */
+    font-family: var(--font-general);
     height: 100vh;
     overflow: hidden;
-    font-size: 14px; /* Base un poco más pequeña */
+    font-size: 14px;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -39,7 +39,7 @@ ul { list-style: none; }
    4. SIDEBAR (IZQUIERDA) - .menu
    ========================================= */
 .menu {
-    width: 240px; /* Un poco más angosto */
+    width: 240px;
     background-color: var(--fondo-panel);
     display: flex;
     flex-direction: column;
@@ -49,11 +49,11 @@ ul { list-style: none; }
     flex-shrink: 0;
 }
 
-/* LOGO: El ÚNICO lugar con Orbitron */
+/* LOGO */
 .sidebar h2.logo {
     font-family: var(--font-nex);
     color: var(--color-azul-electrico);
-    font-size: 2rem; /* Reducido de 2.5rem */
+    font-size: 2rem;
     text-align: center;
     margin-bottom: 30px;
     letter-spacing: 3px;
@@ -66,7 +66,7 @@ ul { list-style: none; }
 .lista a, .l1 {
     display: flex;
     align-items: center;
-    padding: 10px 12px; /* Reducido */
+    padding: 10px 12px;
     border-radius: 6px;
     color: #ccc;
     font-size: 0.9rem;
@@ -82,11 +82,11 @@ ul { list-style: none; }
 }
 
 .lista img, .l1 img {
-    width: 18px; /* Iconos más pequeños */
+    width: 18px;
     height: 18px;
     margin-right: 12px;
-    filter: invert(1);
-    opacity: 0.7;
+    /* Sin filtro para que se vean blancos originales */
+    opacity: 0.9; 
 }
 
 /* Perfil */
@@ -100,69 +100,83 @@ ul { list-style: none; }
    ========================================= */
 .container_central {
     flex-grow: 1;
-    padding: 30px; /* Menos padding general */
+    padding: 30px;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
 }
 
-/* Títulos en Roboto (ya no Orbitron) */
 .home h1, .funciones_principales h1 {
     font-family: var(--font-general);
     font-weight: 700;
     color: var(--color-azul-electrico);
-    font-size: 1.5rem; /* Más pequeño */
-    margin-bottom: 5px;
+    font-size: 1.5rem;
+    /* CAMBIO 1: Aumentado el margen inferior de 10px a 40px para separar el título */
+    margin-bottom: 10px; 
+    text-align: center;
+}
+
+.funciones_principales h1{
+    margin-bottom: 40px;
 }
 
 .home p {
     color: #aaa;
     margin-bottom: 30px;
     font-size: 1rem;
+    text-align: center;
 }
 
 /* Botones / Tarjetas */
-.funciones_principales { flex-grow: 1; }
+.funciones_principales { 
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    margin-bottom: 140px;
+}
 
 .cards1, .cards2 {
     display: flex;
-    gap: 15px; /* Menos espacio entre botones */
-    margin-bottom: 15px;
+    gap: 20px;
+    margin-bottom: 20px;
+    justify-content: center; 
 }
 
 .btn {
     flex: 1;
+    max-width: 400px; 
     background-color: var(--fondo-panel);
     border: 1px solid #333;
-    border-radius: 10px;
-    padding: 15px 20px; /* Mucho más compacto */
+    border-radius: 12px;
+    padding: 20px 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 80px; /* Altura reducida */
+    min-height: 110px; 
     text-align: left;
 }
 
 .btn:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px);
     border-color: var(--color-azul-electrico);
-    box-shadow: 0 4px 12px rgba(0, 176, 255, 0.15);
+    box-shadow: 0 6px 15px rgba(0, 176, 255, 0.2);
 }
 
 .texto_btn {
-    font-family: var(--font-general); /* Roboto */
-    font-size: 0.95rem;
+    font-family: var(--font-general);
+    font-size: 1.1rem; 
     color: white;
-    line-height: 1.3;
+    line-height: 1.4;
     font-weight: 500;
 }
 
 .img_btn img {
-    width: 32px; /* Imágenes más pequeñas */
-    height: 32px;
-    filter: invert(1);
+    width: 40px; 
+    height: 40px;
+    /* Sin filtro invertido */
 }
 
 /* Logos Footer */
@@ -174,16 +188,25 @@ ul { list-style: none; }
     opacity: 0.6;
 }
 
+/* Estilo general para ambos logos */
 .logo_individual1, .logo_individual2 {
-    height: 40px; /* Logos más pequeños */
+    height: 45px;
     object-fit: contain;
 }
+
+/* CAMBIO 2: Estilo específico para el logo de ISER para darle fondo blanco */
+.logo_individual1 {
+    background-color: white;
+    padding: 4px 8px; /* Un poco de espacio alrededor del logo negro */
+    border-radius: 6px; /* Bordes redondeados para que se vea mejor */
+}
+
 
 /* =========================================
    6. PANEL DERECHO - .container_end
    ========================================= */
 .container_end {
-    width: 250px; /* Panel más angosto */
+    width: 250px;
     background-color: var(--fondo-oscuro);
     border-left: 1px solid #333;
     padding: 20px;
@@ -215,7 +238,7 @@ ul { list-style: none; }
 .texto_end1_btn {
     color: white;
     font-weight: 500;
-    font-family: var(--font-general); /* Roboto */
+    font-family: var(--font-general);
     font-size: 0.9rem;
 }
 
@@ -226,12 +249,16 @@ ul { list-style: none; }
     margin-top: 2px;
 }
 
-.img_end1_btn img { width: 28px; height: 28px; filter: invert(1); }
+.img_end1_btn img { 
+    width: 28px; 
+    height: 28px; 
+    /* Sin filtro */
+}
 
 /* Estadísticas */
 .texto_end_btn {
     color: var(--color-azul-electrico);
-    font-family: var(--font-general); /* Roboto */
+    font-family: var(--font-general);
     font-weight: 700;
     font-size: 0.85rem;
     margin-bottom: 5px;

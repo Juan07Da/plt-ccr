@@ -6,7 +6,7 @@ from .models import AppUser, Paciente, HistoriaClinica
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from .services.prediccion_service import obtener_predicciones
-from .forms import PacienteForm, HistoriaClinicaForm, AnalisisFinal
+from .forms import PacienteForm, HistoriaClinicaForm, AnalisisFinal, PerfilForm
 from datetime import date
 from django.db import transaction
 from django.forms import inlineformset_factory
@@ -423,9 +423,18 @@ def home(request):
         - Si no está autenticado, lo redirige a `login`.
     """
     if not request.session.get("authenticated_user"):
-        return redirect("login")  # Redirigir al login si no está autenticado
+        return redirect("login")
 
-    return render(request, "home.html")  # Mostrar página principal
+    # --- LÓGICA PARA CONTAR REGISTROS ---
+    total_pacientes = Paciente.objects.count()      # Cuenta total de pacientes
+    total_predicciones = AnalisisFinal.objects.count() # Cuenta total de predicciones
+
+    context = {
+        "total_pacientes": total_pacientes,
+        "total_predicciones": total_predicciones
+    }
+
+    return render(request, "home.html", context)
 
 def hacer_prediccion(request):
     contexto = {
@@ -608,3 +617,41 @@ def historial_clinico(request, pk):
         'total_analisis': analisis.count(),
     }
     return render(request, 'historial_clinico.html', context)
+
+def perfil_view(request):
+    # 1. Verificar sesión (Obteniendo el email como corregimos antes)
+    user_email = request.session.get("authenticated_user")
+    if not user_email:
+        return redirect("login")
+
+    # 2. Obtener usuario usando el email
+    usuario = get_object_or_404(AppUser, email=user_email)
+
+    if request.method == 'POST':
+        form = PerfilForm(request.POST, instance=usuario)
+        
+        # Aquí Django ejecuta clean_password automáticamente
+        if form.is_valid():
+            # commit=False crea el objeto pero no lo guarda en DB todavía
+            user_obj = form.save(commit=False)
+            
+            nueva_password = form.cleaned_data.get('password')
+            
+            if nueva_password:
+                # Si validó correctamente y no es None, asignamos la nueva
+                user_obj.password = nueva_password
+            else:
+                # Si venía vacía (None), recuperamos la contraseña vieja
+                # para que no se guarde vacía ni se re-encripte lo que no es.
+                user_obj.password = AppUser.objects.get(id=usuario.id).password
+
+            user_obj.save()
+            
+            # Actualizamos la sesión por si cambió el correo
+            request.session["authenticated_user"] = user_obj.email
+            
+            return redirect('home')
+    else:
+        form = PerfilForm(instance=usuario)
+
+    return render(request, 'perfil.html', {'form': form})

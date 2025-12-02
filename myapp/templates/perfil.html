@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEX - Perfil de Usuario</title>
+    <link rel="stylesheet" href="{% static 'myapp/css/styles_home.css'%}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Roboto&display=swap" rel="stylesheet">
+    <script src="{% static 'myapp/js/scripts.js' %}" defer></script>
+    
+    <style>
+        /* Ocultar barra de scroll visualmente en el contenedor central */
+        .container_central {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* IE and Edge */
+        }
+        .container_central::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        .form-container {
+            background-color: #2A2A2A; 
+            /* Relleno ajustado: menos arriba/abajo (30px), más a los lados (50px) */
+            padding: 30px 50px; 
+            border-radius: 12px;
+            /* AUMENTADO: Antes era 600px, ahora 850px para que se vea más ancho */
+            max-width: 600px; 
+            width: 100%; /* Asegura que tome el espacio disponible hasta el max-width */
+            margin: 0 auto;
+            border: 1px solid #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .form-group {
+            /* REDUCIDO: Antes 20px, ahora 15px para ahorrar espacio vertical */
+            margin-bottom: 20px; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            color: #00B0FF;
+            margin-bottom: 5px; 
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        /* Inputs oscuros */
+        .input-nex, input[type="text"], input[type="email"], input[type="password"] {
+            background-color: #1E1E1E !important; 
+            border: 1px solid #444;
+            color: white !important;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: 'Roboto', sans-serif;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .input-nex:focus, input:focus {
+            outline: none;
+            border-color: #00B0FF;
+        }
+
+        .help-text {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 4px;
+        }
+
+        .error-msg {
+            color: #ff4444;
+            font-size: 0.9rem;
+            margin-top: 4px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .btn-guardar {
+            background-color: #00B0FF;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-guardar:hover {
+            background-color: #0086CC;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container_principal">
+        <div class="menu">
+            <div class="sidebar">
+                <h2 class="logo">NEX</h2>
+                <nav>
+                    <ul>
+                        <li><div class="lista"><a href="{% url 'hacer_prediccion' %}"><img src="{% static 'myapp/icon/hacer una prediccion.png' %}" alt="">Prediccion individual</a></div></li>
+                        <li><div class="lista"><a href="{% url 'crear_paciente' %}"><img src="{% static 'myapp/icon/predicciones.png' %}" alt="">Añadir Paciente</a></div></li>
+                        <li><div class="lista"><a href="{% url 'lista_pacientes' %}"><img src="{% static 'myapp/icon/historia clinica.png' %}" alt="">Lista de pacientes</a></div></li>
+                        <li><div class="lista"><a href="#"><img src="{% static 'myapp/icon/estadisticas.png' %}" alt="">Estadísticas</a></div></li>
+                        <li><div class="lista"><a href="#"><img src="{% static 'myapp/icon/biblioteca medica.png' %}" alt="">Biblioteca Médica</a></div></li>
+                        <li><div class="lista"><a href="#"><img src="{% static 'myapp/icon/noticias.png' %}" alt="">Noticias</a></div></li>
+                        <li><div class="lista"><a href="#"><img src="{% static 'myapp/icon/soporte y ayuda.png' %}" alt="">Soporte y Ayuda</a></div></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="perfil">
+                <nav>
+                    <ul>
+                        <li><div class="lista"><a class="l1" href="{% url 'perfil' %}">Perfil <img src="{% static 'myapp/icon/perfil.png' %}" alt=""></a></div></li>
+                        <li><div class="lista"><a class="l1" href="{% url 'logout' %}">Cerrar sesión <img src="{% static 'myapp/icon/cerrar sesion.png' %}" alt=""></a></div></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div class="container_central">
+            <div class="home">
+                <h1>Editar Perfil</h1>
+                <p style="margin-bottom: 20px;">Actualiza tu información personal</p> </div>
+
+            <div class="form-container">
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}">Nombre:</label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <div class="error-msg">{{ form.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}">Apellido:</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <div class="error-msg">{{ form.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}">Correo Electrónico:</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="error-msg">{{ form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.password.id_for_label }}">Contraseña:</label>
+                        {{ form.password }}
+                        
+                        {% if form.password.errors %}
+                            <div class="error-msg">
+                                {{ form.password.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn-guardar">Guardar Cambios</button>
+                </form>
+            </div>
+            
+            <div class="logos" style="margin-top: 25px;"> <img class="logo_individual1" src="{% static 'myapp/img/Logo iser.png' %}" alt="" style="background-color: white; padding: 4px 8px; border-radius: 6px;">
+                <img class="logo_individual2" src="{% static 'myapp/img/Logo uni.png' %}" alt="">
+            </div>
+        </div>
+
+        <div class="container_end">
+            <div class="card_end1">
+                <div class="texto_end1_btn">Hora:<br> <span id="hora"></span></div>
+                <div class="img_end1_btn"><img src="{% static 'myapp/icon/reloj.png' %}" alt=""></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

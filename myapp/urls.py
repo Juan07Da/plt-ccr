@@ -18,4 +18,5 @@ urlpatterns = [
     path('agregar_historia_clinica/<int:pk>/', views.agregar_historia_clinica, name='agregar_historia_clinica'),
     path('analisis_descrip_clinica/<int:pk>/', views.analisis_descrip_clinica, name='analisis_descrip_clinica'),
     path('historial_clinico/<int:pk>/', views.historial_clinico, name='historial_clinico'),
+    path('perfil/', views.perfil_view, name='perfil'),
 ]
